@@ -7,5 +7,4 @@ async def listen():
         while True:
             message = await websocket.recv()
             print(f"Received: {message}")
-            print('okok\n')
 asyncio.get_event_loop().run_until_complete(listen())
