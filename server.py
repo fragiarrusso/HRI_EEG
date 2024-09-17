@@ -6,7 +6,7 @@ import time
 async def send_csv(websocket, path):
     try:
         # Open the CSV file
-        with open('data.csv', newline='') as csvfile:
+        with open('./files/task4_dats_neurometric_07_05_2024.csv', newline='') as csvfile:
             csv_reader = csv.reader(csvfile)
             
             for row in csv_reader:
