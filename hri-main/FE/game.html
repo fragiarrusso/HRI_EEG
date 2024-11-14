@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Tic-Tac-Toe</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="login-container">
+        <form id="loginForm">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+            <button type="submit">Login</button>
+        </form>
+        <div id="message"></div>
+    </div>
+    
+    <div id="game-container">
+        <div id="tic-tac-toe-board"></div>
+        <button id="undo">Annulla Ultima Mossa</button>
+        <button id="restart">Ricomincia Partita</button>
+        <button id="close">Chiudi Gioco</button>
+    </div>
+
+    <!-- Aggiunta dell'immagine a pieno schermo -->
+    <div id="fullscreen-image">
+        <!-- <img src="logo.png" alt="Fullscreen Image" style="width: 100vw; height: 100vh; object-fit: cover;"> -->
+        <h1>Waiting...</h1>
+        <button id="start" class="yes-button">Start</button>
+
+    </div>
+
+    <!-- Aggiunta dei bottoni Yes e No -->
+    <div id="want-play">
+        <div id="yes-no-buttons">
+            <h1>Do you want to play?</h1>
+            <button id="yes" class="yes-button">Yes</button>
+            <button id="no" class="no-button">No</button>
+        </div>
+    </div>
+
+    <!-- Aggiunta dei bottoni Yes e No -->
+    <div id="game-choose">
+        <div id="yes-no-buttons">
+            <h1>Which game do you want to play?</h1>
+            <button id="tris" class="yes-button">Tris</button>
+            <button id="shoot" class="no-button">Shoot</button>
+        </div>
+    </div>
+
+    <div id="game-shoot">
+        <h1>Playing...</h1>
+    </div>
+
+    <!-- <script src="js/login.js"></script>
+    <script src="js/script.js"></script> -->
+    <script src="js/robot.js"></script>
+</body>
+</html>

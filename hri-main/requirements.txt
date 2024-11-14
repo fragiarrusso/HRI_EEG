@@ -1,0 +1,15 @@
+deepface==0.0.90
+fer==22.5.1
+Flask==2.2.2
+flask-cors==4.0.0
+flask-socketio==5.3.6
+keras==3.3.2
+keyboard==0.13.5
+librosa==0.10.1
+mysql-connector-python==8.3.0
+numpy==1.24.3
+opencv-python==4.9.0.80
+pyaudio==0.2.14
+tensorflow==2.16.1
+tf-keras==2.16.0
+websockets=12.0

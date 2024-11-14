@@ -1,0 +1,6 @@
+1)IPC(Lollo)
+2)checkLevel(Lollo)
+3)Robot movement e say.py(Lollo)
+4)socialReasoning FE(tris)
+5)imageClassification(Luca)
+6)sentimentAnalysis(Lollo)
