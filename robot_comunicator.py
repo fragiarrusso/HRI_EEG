@@ -3,14 +3,6 @@ import sys
 import socket
 import json
 
-sys.path.append(os.getenv('PEPPER_TOOLS_HOME')+'/cmd_server')
-
-import pepper_cmd
-from pepper_cmd import *
-
-project_folder = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.append(project_folder)
-
 
 class RobotCommunicator():
     def __init__(self, ip = '172.17.0.1', port = 9000):
@@ -62,4 +54,3 @@ class RobotCommunicator():
     
         return
     
-robotCommunicator = RobotCommunicator() 
