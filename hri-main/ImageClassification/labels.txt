@@ -1,3 +1,0 @@
-0 Shoot
-1 Guard
-2 Reload
