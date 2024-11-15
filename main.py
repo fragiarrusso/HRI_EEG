@@ -7,7 +7,7 @@ sys.path.append(os.getenv('PEPPER_TOOLS_HOME') + '/cmd_server')
 import pepper_cmd
 from pepper_cmd import *
 from robot_comunicator import *
-
+from naoqi import ALProxy
 project_folder = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(project_folder)
 
@@ -17,6 +17,19 @@ PRESENTATION = "PRESENTATION"
 states = [INITIAL_STATE, PRESENTATION]
 current_state = INITIAL_STATE
 
+robot_ip = "127.0.0.1"  # Replace with robot's IP address or simulator IP
+port = 36233
+
+tts = ALProxy("ALTextToSpeech", robot_ip, port)
+memory = ALProxy("ALMemory", robot_ip, port)
+
+while True:
+    head_touch = memory.getData("Device/SubDeviceList/Head/Touch/Middle/Sensor/Value")
+    if head_touch > 0:
+        print("Head touched!")
+
+motion = ALProxy("ALMotion", robot_ip, port)
+motion.moveTo(0.5, 0, 0)  # Move forward 0.5 meters
 
 '''begin()
 
@@ -31,6 +44,11 @@ while i<=5:
 pepper_cmd.robot.say('Bye')
 end()
 '''
+
+
+
+
+
 
 # Start robot
 begin()
