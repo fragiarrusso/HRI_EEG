@@ -70,7 +70,7 @@ pepper_cmd.robot.say('Hello')
 
 i=0
 while i<=5:
-    result=robotCommunicator.read_EEG_MessageSocket()
+    result=robotCommunicator.read_EEG_Message_Socket()
     pepper_cmd.robot.say(result)
     i+=1
 
