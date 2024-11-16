@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insert Name</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Benvenuto</h1>
+    <p>Inserisci il tuo nome:</p>
+    <div id="nameContainer"></div>
+    <button id="submitName">Invia</button>
+
+    <script>
+        const nameContainer = document.getElementById('nameContainer');
+        const submitButton = document.getElementById('submitName');
+        let name = '';
+
+        // Create buttons for each letter
+        'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').forEach((letter) => {
+            const button = document.createElement('button');
+            button.textContent = letter;
+            button.addEventListener('click', () => {
+                name += letter;
+                nameContainer.textContent = name;
+            });
+            document.body.appendChild(button);
+        });
+
+        // Submit the name
+        submitButton.addEventListener('click', () => {
+            fetch('/api/submit-name', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name }),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.exists) {
+                        window.location.href = `/welcome.html?name=${name}&exists=true`;
+                    } else {
+                        window.location.href = `/welcome.html?name=${name}&exists=false`;
+                    }
+                })
+                .catch((error) => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>

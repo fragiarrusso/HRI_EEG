@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1 id="welcomeMessage"></h1>
+    <button id="leftButton">Azione Sinistra</button>
+    <button id="rightButton">Vai al Gioco</button>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const name = urlParams.get('name');
+        const exists = urlParams.get('exists') === 'true';
+
+        // Set welcome message
+        const welcomeMessage = document.getElementById('welcomeMessage');
+        if (exists) {
+            welcomeMessage.textContent = `Bentornato, ${name}. Cosa vorresti fare?`;
+        } else {
+            welcomeMessage.textContent = `Benvenuto, ${name}. Cosa vorresti fare?`;
+        }
+
+        // Left button action
+        document.getElementById('leftButton').addEventListener('click', () => {
+            fetch('/api/left-button', {
+                method: 'POST',
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log(data.message);
+                })
+                .catch((error) => console.error('Error:', error));
+        });
+
+        // Right button action: Redirect to the game
+        document.getElementById('rightButton').addEventListener('click', () => {
+            window.location.href = '/game.html';
+        });
+    </script>
+</body>
+</html>

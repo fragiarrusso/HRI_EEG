@@ -2,3 +2,6 @@
 .venv
 hri-main
 __pycache__
+web_interfaces/node_modules
+web_interfaces/package.json
+web_interfaces/package-lock.json
