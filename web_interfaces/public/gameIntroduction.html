@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introduzione al Gioco</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Stili per la struttura generale */
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f8ff;
+            padding: 10px;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3.5em;
+            color: #333;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+            margin-bottom: 10px;
+        }
+
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-grow: 1;
+            justify-content: center;
+        }
+
+        button {
+            width: 280px;
+            padding: 20px;
+            font-size: 20px;
+            margin: 20px 0;
+            border: none;
+            border-radius: 8px;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <h1>Benvenuto all'Introduzione al Gioco</h1>
+    <div class="button-container">
+        <button id="playButton">Gioca</button>
+        <button id="rulesButton">Regole</button>
+        <button id="leaderboardButton">Classifica</button>
+    </div>
+
+    <script>
+        // Play button action: Redirect to game.html
+        document.getElementById('playButton').addEventListener('click', () => {
+            window.location.href = '/game.html'; // Reindirizzamento a game.html
+        });
+
+        // Rules button action
+        document.getElementById('rulesButton').addEventListener('click', () => {
+            window.location.href = '/regole.html'; // Modifica questo percorso con quello corretto per la pagina delle regole
+        });
+
+        // Leaderboard button action
+        document.getElementById('leaderboardButton').addEventListener('click', () => {
+            window.location.href = '/classifica.html'; // Modifica questo percorso con quello corretto per la pagina della classifica
+        });
+    </script>
+</body>
+</html>

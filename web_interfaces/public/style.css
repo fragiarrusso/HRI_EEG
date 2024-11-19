@@ -1,11 +1,212 @@
+/* Stili generali */
 body {
     font-family: Arial, sans-serif;
     text-align: center;
-    padding: 20px;
+    padding: 30px;
+    background-color: #f0f8ff;
+}
+
+h1 {
+    font-size: 3em;
+    color: #333;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+    margin-bottom: 25px;
+}
+
+p {
+    font-size: 1.5em;
+    color: #555;
+}
+
+#nameContainer {
+    font-size: 2.5em;
+    font-weight: bold;
+    padding: 25px;
+    border: 2px solid #333;
+    border-radius: 12px;
+    margin: 25px auto;
+    width: 80%;
+    max-width: 650px;
+    background-color: #ffffff;
+    color: #333;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 button {
-    margin: 5px;
+    margin: 8px;
+    padding: 15px 30px;
+    font-size: 18px;
+    border: none;
+    border-radius: 6px;
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+button:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+.keyboard-row {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 12px;
+}
+
+.keyboard-button {
+    margin: 6px;
+    padding: 18px;
+    font-size: 20px;
+    width: 55px;
+    height: 55px;
+    border-radius: 10px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+.keyboard-button:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+}
+
+.keyboard-button:active {
+    transform: translateY(0);
+}
+
+/* Modale personalizzato */
+.modal {
+    display: none; /* Inizialmente nascosto */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Sfondo semi-trasparente */
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 400px;
+    text-align: center;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.modal-buttons {
+    margin-top: 20px;
+}
+
+.modal-buttons button {
     padding: 10px 20px;
     font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+    margin: 5px;
+    transition: background-color 0.3s;
 }
+
+.modal-buttons button:hover {
+    background-color: #45a049;
+}
+
+.modal-buttons button:active {
+    transform: translateY(1px);
+}
+
+/* Modale per nome vuoto */
+#emptyNameModal {
+    display: none; /* Inizialmente nascosto */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Sfondo semi-trasparente */
+    justify-content: center;
+    align-items: center;
+}
+
+#emptyNameModal .modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 400px;
+    text-align: center;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+#emptyNameModal .modal-buttons {
+    margin-top: 20px;
+}
+
+#emptyNameModal .modal-buttons button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    background-color: #f44336;
+    color: white;
+    cursor: pointer;
+    margin: 5px;
+    transition: background-color 0.3s;
+}
+
+#emptyNameModal .modal-buttons button:hover {
+    background-color: #e53935;
+}
+
+#emptyNameModal .modal-buttons button:active {
+    transform: translateY(1px);
+}
+
+
+#spaceButton {
+    background-color: #007BFF;
+    font-size: 16px;
+    width: 120px;
+    height: 55px;
+    margin: 10px 0;
+}
+
+
+/* Stili generali per i bottoni 
+button {
+    width: 250px;
+    padding: 20px;
+    font-size: 18px;
+    margin: 15px 0;
+    border: none;
+    border-radius: 8px;
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+button:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+}
+
+button:active {
+    transform: translateY(0);
+}
+*/

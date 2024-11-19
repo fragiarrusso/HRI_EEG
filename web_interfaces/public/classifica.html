@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classifica</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        #scoresTable {
+            width: 80%;
+            margin: 0 auto;
+            border-collapse: collapse;
+        }
+
+        #scoresTable th, #scoresTable td {
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+
+        #scoresTable th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .backButton {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+
+        .backButton:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Classifica</h1>
+    <table id="scoresTable">
+        <thead>
+            <tr>
+                <th>Posizione</th>
+                <th>Nome</th>
+                <th>Punteggio</th>
+                <th>Media</th>
+            </tr>
+        </thead>
+        <tbody id="scoresBody">
+            <!-- I punteggi verranno popolati dinamicamente -->
+        </tbody>
+    </table>
+
+    <button class="backButton" onclick="window.location.href = 'welcome.html';">Torna alla home</button>
+
+    <script>
+        // Funzione per caricare i punteggi dal server e visualizzarli
+        function loadLeaderboard() {
+            fetch('http://localhost:3000/api/leaderboard')
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.getElementById('scoresBody');
+                    tableBody.innerHTML = ''; // Pulisce la tabella
+
+                    data.forEach((entry, index) => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${index + 1}</td>
+                            <td>${entry.name}</td>
+                            <td>${entry.score}</td>
+                            <td>${entry.avg.toFixed(2)}</td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                })
+                .catch(err => console.error("Errore nel caricamento della classifica", err));
+        }
+
+        // Carica la classifica quando la pagina è pronta
+        window.onload = loadLeaderboard;
+    </script>
+</body>
+</html>

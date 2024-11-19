@@ -32,17 +32,16 @@ app.post('/api/submit-name', (req, res) => {
     let user = users.find((user) => user.name === name);
 
     if (!user) {
-        // If user doesn't exist, create a new one
+        // Create new user
         user = { name, last: 0, avg: 0 };
         users.push(user);
         fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
         return res.json({ exists: false });
     }
 
-    // If user exists, send a confirmation message
-    res.json({ exists: true, message: `Il tuo nickname "${name}" è già registrato. Confermi di essere te?` });
+    // User exists
+    res.json({ exists: true });
 });
-
 
 // Dummy route for the left button action
 app.post('/api/left-button', (req, res) => {
@@ -53,7 +52,6 @@ app.post('/api/left-button', (req, res) => {
 app.listen(PORT, () => {
     console.log(`Server is running at http://localhost:${PORT}`);
 });
-
 
 
 /*
