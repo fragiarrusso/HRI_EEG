@@ -40,7 +40,7 @@ app.post('/api/submit-name', (req, res) => {
     }
 
     // If user exists, send a confirmation message
-    res.json({ exists: true, message: `Il tuo nickname "${name}" è già registrato. Confermi di essere te?` });
+    res.json({ exists: true, message: `Il tuo nickname "${name}" è già registrato. Confermi di essere tu?` });
 });
 
 

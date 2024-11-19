@@ -10,4 +10,5 @@ package.json
 node_modules
 .DS_Store
 pepper-narrator-main
+web_interfaces/users.json
 users.json
