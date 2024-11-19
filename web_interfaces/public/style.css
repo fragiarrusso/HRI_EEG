@@ -1,4 +1,8 @@
 /* Stili generali */
+/* INDEX */
+
+
+
 body {
     font-family: Arial, sans-serif;
     text-align: center;
@@ -11,7 +15,12 @@ h1 {
     color: #333;
     text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
     margin-bottom: 25px;
+    margin: 0;
+    padding: 0;
+    text-align: center;
 }
+
+
 
 p {
     font-size: 1.5em;
@@ -183,30 +192,187 @@ button:active {
     font-size: 16px;
     width: 120px;
     height: 55px;
-    margin: 10px 0;
+    margin: 10px 20px 10px 0; /* Aggiungi un margine a destra per distanziare dal pulsante "CANCELLA" */
 }
 
-
-/* Stili generali per i bottoni 
-button {
-    width: 250px;
-    padding: 20px;
-    font-size: 18px;
-    margin: 15px 0;
-    border: none;
-    border-radius: 8px;
-    background-color: #4CAF50;
-    color: white;
-    cursor: pointer;
+#deleteButton {
+    background-color: #007BFF;
+    font-size: 16px;
+    width: 120px;
+    height: 55px;
+    margin: 10px 0 10px 20px; /* Aggiungi un margine a sinistra per distanziare dal pulsante "SPAZIO" */
     transition: transform 0.2s, background-color 0.2s;
 }
 
-button:hover {
-    background-color: #45a049;
-    transform: translateY(-2px);
+
+
+
+
+
+/* Stile per la pagina di benvenuto */
+/* WELCOME PAGE */
+
+.welcomePage {
+    display: flex;
+    flex-direction: column; /* Posiziona gli elementi in colonna */
+    justify-content: flex-start; /* Posiziona gli elementi all'inizio (in alto) */
+    align-items: center; /* Centra orizzontalmente tutti gli elementi */
+    height: 100vh; /* Imposta l'altezza della pagina al 100% della viewport */
+    margin: 0; /* Rimuove margini di default */
+    padding: 0; /* Rimuove padding di default */
 }
 
-button:active {
-    transform: translateY(0);
+/* Stile per il messaggio di benvenuto */
+#welcomeMessage {
+    margin-top: 50px; /* Distanza dal bordo superiore */
+    text-align: center; /* Centra il testo */
 }
-*/
+
+/* Stile per il contenitore dei pulsanti */
+.button-container {
+    display: flex;
+    justify-content: center; /* Centra orizzontalmente i pulsanti */
+    margin-top: 120px; /* Distanza tra il messaggio di benvenuto e i pulsanti */
+}
+
+/* Stile per i pulsanti */
+#leftButton, #rightButton {
+    margin: 100px; /* Spazio tra i pulsanti */
+    padding: 40px 50px; /* Dimensione dei pulsanti */
+    font-size: 50px; /* Dimensione del testo */
+    background-color: #4CAF50; /* Colore di sfondo dei pulsanti */
+    color: white; /* Colore del testo */
+    border: none; /* Rimuove il bordo */
+    border-radius: 5px; /* Angoli arrotondati */
+    cursor: pointer; /* Mostra il cursore a mano */
+    transition: background-color 0.3s ease; /* Effetto transizione sul colore di sfondo */
+}
+
+/* Cambia colore dei pulsanti al passaggio del mouse */
+#leftButton:hover, #rightButton:hover {
+    background-color: #45a049;
+}
+
+
+
+
+
+/* Stile per il titolo */
+/* GAME INTRODUCTION */
+
+/* Contenitore per i bottoni */
+#buttonContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-grow: 1;
+    justify-content: center;
+    margin-top: 120px; /
+}
+
+/* Stile per i pulsanti */
+#playButton, #rulesButton, #leaderboardButton {
+    width: 300px; /* Imposta una larghezza fissa per i pulsanti */
+    height: 80px; /* Imposta un'altezza fissa per i pulsanti */
+    margin: 40px; /* Spazio tra i pulsanti */
+    font-size: 35px; /* Dimensione del testo */
+    background-color: #4CAF50; /* Colore di sfondo dei pulsanti */
+    color: white; /* Colore del testo */
+    border: none; /* Rimuove il bordo */
+    border-radius: 5px; /* Angoli arrotondati */
+    cursor: pointer; /* Mostra il cursore a mano */
+    transition: background-color 0.3s ease; /* Effetto transizione sul colore di sfondo */
+    
+    display: flex; /* Utilizza il modello di layout flexbox */
+    justify-content: center; /* Centra il testo orizzontalmente */
+    align-items: center; /* Centra il testo verticalmente */
+}
+
+
+
+/* Cambia colore dei pulsanti al passaggio del mouse */
+#playButton:hover, #rulesButton:hover, #leaderboardButton:hover {
+    background-color: #45a049;
+}
+
+
+
+
+/* BACK BUTTON */
+.backButton {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    background-color: #007BFF;
+    color: white;
+    cursor: pointer;
+    margin-top: 20px;
+    border-radius: 5px;
+}
+
+.backButton:hover {
+    background-color: #007BFF;
+}
+
+/* Stile per il pulsante Indietro */
+#arrowButton {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 10px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+/* Icona della freccia */
+#arrowButton svg {
+    width: 30px;
+    height: 30px;
+    fill: #f44336; /* Colore rosso per la freccia */
+}
+
+
+
+
+
+/* Stili per il layout della pagina */
+/* PAGINA REGOLE*/
+
+
+#rulesPage {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f8ff;
+    padding: 30px;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    position: relative; /* Per permettere il posizionamento assoluto del pulsante Indietro */
+}
+
+/* Stile per il titolo delle regole */
+#rulesTitle {
+    font-size: 3em;
+    color: #333;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+    margin-bottom: 30px;
+}
+
+/* Stile per la descrizione delle regole */
+#rulesDescription {
+    font-size: 1.5em;
+    color: #555;
+    max-width: 800px;
+    line-height: 1.6;
+    text-align: left;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+

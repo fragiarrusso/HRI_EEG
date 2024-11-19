@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head> 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Insert Name</title>
@@ -16,9 +16,10 @@
     <div class="keyboard-row" id="row2"></div>
     <div class="keyboard-row" id="row3"></div>
 
-    <!-- Aggiungi una nuova riga per il tasto SPAZIO -->
+    <!-- Aggiungi una nuova riga per il tasto SPAZIO e CANCELLA -->
     <div class="keyboard-row" id="row4">
         <button id="spaceButton" class="keyboard-button">SPAZIO</button>
+        <button id="deleteButton" class="keyboard-button">CANCELLA</button> <!-- Pulsante CANCELLA -->
     </div>
 
     <!-- Modale per nome vuoto -->
@@ -82,6 +83,14 @@
         document.getElementById('spaceButton').addEventListener('click', () => {
             name += ' ';
             nameContainer.textContent = name; // Mostra il nome con lo spazio
+        });
+
+        // Aggiungi il tasto CANCELLA
+        document.getElementById('deleteButton').addEventListener('click', () => {
+            if (name.length > 0) {
+                name = name.slice(0, -1); // Rimuovi l'ultimo carattere
+                nameContainer.textContent = name; // Aggiorna la visualizzazione del nome
+            }
         });
 
         // Funzione per inviare il nome

@@ -5,44 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Regole del Gioco</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        /* Stili per il layout della pagina */
-        body {
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f0f8ff;
-            padding: 30px;
-            font-family: Arial, sans-serif;
-            text-align: center;
-        }
-
-        h1 {
-            font-size: 3em;
-            color: #333;
-            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
-            margin-bottom: 30px;
-        }
-
-        p {
-            font-size: 1.5em;
-            color: #555;
-            max-width: 800px;
-            line-height: 1.6;
-            text-align: left;
-            padding: 10px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-    </style>
 </head>
-<body>
-    <h1>Regole del Gioco</h1>
-    <p>
+<body id="rulesPage">
+    <!-- Pulsante per tornare indietro -->
+    <button id="arrowButton" onclick="window.location.href='/gameIntroduction.html'">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M20 11H7.83l5.59-5.59-1.41-1.41L3.83 12l8.18 8.18 1.41-1.41L7.83 13H20z"/>
+        </svg>
+    </button>
+
+    <h1 id="rulesTitle">Regole del Gioco</h1>
+    <p id="rulesDescription">
         Benvenuto al gioco del Quadrato Saltellante! Ecco come giocare:
         <br><br>
         1. Il tuo obiettivo è aiutare un quadrato a superare gli ostacoli saltando al momento giusto.
@@ -57,5 +30,6 @@
         <br><br>
         Buona fortuna e divertiti a giocare!
     </p>
+    <button class="backButton" onclick="window.location.href = 'welcome.html';">Torna alla home</button>
 </body>
 </html>
