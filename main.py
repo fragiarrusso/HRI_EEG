@@ -14,6 +14,9 @@ sys.path.append(project_folder)
 # Define states
 INITIAL_STATE = "INITIAL_STATE"
 PRESENTATION = "PRESENTATION"
+PLAYING_TABLET = "PLAYING_TABLET"
+DOING_EXERCISES = "DOING_EXERCISES"
+
 states = [INITIAL_STATE, PRESENTATION]
 current_state = INITIAL_STATE
 
@@ -22,14 +25,9 @@ port = 36233
 
 tts = ALProxy("ALTextToSpeech", robot_ip, port)
 memory = ALProxy("ALMemory", robot_ip, port)
-
-while True:
-    head_touch = memory.getData("Device/SubDeviceList/Head/Touch/Middle/Sensor/Value")
-    if head_touch > 0:
-        print("Head touched!")
-
 motion = ALProxy("ALMotion", robot_ip, port)
-motion.moveTo(0.5, 0, 0)  # Move forward 0.5 meters
+
+
 
 '''begin()
 
@@ -48,7 +46,14 @@ end()
 
 
 
+#motion.moveTo(0.5, 0, 0)  # Move forward 0.5 meters
 
+
+
+
+
+
+'''
 
 # Start robot
 begin()
@@ -88,3 +93,4 @@ finally:
     pepper_cmd.robot.stopSensorMonitor()
     end()
 
+'''
