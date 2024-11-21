@@ -377,6 +377,7 @@ button:active {
 }
 
 
+/*
 #connectionBanner .banner {
     position: fixed;
     top: 0;
@@ -387,4 +388,54 @@ button:active {
     padding: 10px;
     font-weight: bold;
     z-index: 1000;
+}
+*/
+
+
+
+/* Modal Styles */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1001; /* Sit on top, above banners */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4); /* Black with opacity */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* Centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Adjust as needed */
+    text-align: center;
+}
+
+/* Modal Styles specific to game_preamble.html */
+#gamePreambleModal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1001; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4); /* Black with opacity */
+    /* Removed 'display: flex;' to prevent conflict */
+    align-items: center;
+    justify-content: center;
+}
+
+#gamePreambleModal .modal-content {
+    background-color: #fefefe;
+    padding: 20px;
+    border: 1px solid #888;
+    border-radius: 10px;
+    width: 50%; /* Adjust as needed */
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }

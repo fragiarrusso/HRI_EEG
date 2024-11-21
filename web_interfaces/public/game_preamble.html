@@ -1,3 +1,385 @@
+<!--
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    //Existing head content 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introduzione al Gioco</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body id="welcomePage">
+    // Banner for connection status 
+    <div id="connectionBanner" class="banner" style="display: none;"></div>
+
+    //Banner for stress warning 
+    <div id="stressBanner" class="banner" style="display: none; background-color: orange;"></div>
+
+    //Back button 
+    <button id="arrowButton">
+         SVG content for the back arrow 
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M20 11H7.83l5.59-5.59-1.41-1.41L3.83 12l8.18 8.18 1.41-1.41L7.83 13H20z"/>
+        </svg>
+    </button>
+
+    // Page title 
+    <h1 id="pageTitle">Benvenuto all'Introduzione al Gioco</h1>
+
+    // Buttons container 
+    <div id="buttonContainer" class="button-container">
+        <button id="playButton">Gioca</button>
+        <button id="rulesButton">Regole</button>
+        <button id="leaderboardButton">Classifica</button>
+    </div>
+
+    <script>
+        // Variable to keep track of the previous connection status
+        let previousStatus = null;
+
+        // Function to display the connection banner
+        function showConnectionBanner(status) {
+            const banner = document.getElementById('connectionBanner');
+            if (status === 'connected') {
+                banner.textContent = 'Connected to the server.';
+                banner.style.backgroundColor = 'green';
+            } else {
+                banner.textContent = 'Disconnected from the server.';
+                banner.style.backgroundColor = 'red';
+            }
+            banner.style.display = 'block';
+            // Make the banner vanish after 5 seconds
+            setTimeout(() => {
+                banner.style.display = 'none';
+            }, 5000);
+        }
+
+        // Function to update the connection status
+        function updateConnectionStatus() {
+            fetch('/api/connection_status')
+                .then(response => response.json())
+                .then(data => {
+                    const currentStatus = data.status;
+                    if (previousStatus === null) {
+                        // First time checking status; do not display any banner
+                        previousStatus = currentStatus;
+                    } else if (previousStatus !== currentStatus) {
+                        if (currentStatus === 'connected' && previousStatus === 'disconnected') {
+                            // Connection was established
+                            showConnectionBanner('connected');
+                        } else if (currentStatus === 'disconnected' && previousStatus === 'connected') {
+                            // Connection was lost
+                            showConnectionBanner('disconnected');
+                        }
+                        previousStatus = currentStatus;
+                    }
+                    // Do nothing if status hasn't changed
+                })
+                .catch(error => console.error('Error fetching connection status:', error));
+        }
+
+        // Start polling the connection status every 5 seconds
+        setInterval(updateConnectionStatus, 5000);
+        // Also, check the status immediately when the page loads
+        updateConnectionStatus();
+
+        // Function to display the stress banner
+        function showStressBanner(message) {
+            const banner = document.getElementById('stressBanner');
+            banner.textContent = message;
+            banner.style.display = 'block';
+            // Make the banner vanish after 10 seconds
+            setTimeout(() => {
+                banner.style.display = 'none';
+            }, 10000);
+        }
+
+        // Function to update the stress levels
+        function updateStressLevels() {
+            fetch('/api/rolling_averages')
+                .then(response => response.json())
+                .then(data => {
+                    const workload = data.rolling_avg_workload;
+                    const stress = data.rolling_avg_stress;
+                    if (workload !== null && stress !== null) {
+                        const sum = workload + stress;
+                        if (sum > 2) {
+                            showStressBanner('I tuoi livelli di stress sono troppo alti, prova a rilassarti prima di continuare a giocare');
+                        }
+                    }
+                })
+                .catch(error => console.error('Error fetching rolling averages:', error));
+        }
+
+        // Start polling the stress levels every 5 seconds
+        setInterval(updateStressLevels, 5000);
+        // Also, check the stress levels immediately when the page loads
+        updateStressLevels();
+
+        // Existing JavaScript code
+
+        // Rules button action
+        document.getElementById('rulesButton').addEventListener('click', () => {
+            window.location.href = '/regole.html'; 
+        });
+
+        // Leaderboard button action
+        document.getElementById('leaderboardButton').addEventListener('click', () => {
+            window.location.href = '/classifica.html'; 
+        });
+
+        // Play button action
+        document.getElementById('playButton').addEventListener('click', () => {
+            fetch('/api/game', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+            })
+                .then(() => {
+                    window.location.href = '/game.html';
+                })
+                .catch((error) => console.error('Error:', error));
+        });
+
+        // Back button action
+        document.getElementById('arrowButton').addEventListener('click', () => {
+            fetch('/api/choice', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+            })
+                .then(() => {
+                    window.location.href = '/welcome.html';
+                })
+                .catch((error) => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>
+
+<--
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    //Existing head content 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introduzione al Gioco</title>
+    <link rel="stylesheet" href="style.css">
+
+</head>
+<body id="welcomePage">
+    //Banner for connection status 
+    <div id="connectionBanner" class="banner" style="display: none;"></div>
+
+    // Stress Level Modal 
+    <div id="gamePreambleModal" class="modal">
+        <div class="modal-content">
+            <p>I tuoi livelli di stress sono troppo alti, prova a rilassarti prima di iniziare a giocare</p>
+            <button id="stressConfirmButton">OK</button>
+        </div>
+    </div>
+
+
+    //Back button 
+    <button id="arrowButton">
+        //SVG content for the back arrow 
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M20 11H7.83l5.59-5.59-1.41-1.41L3.83 12l8.18 8.18 1.41-1.41L7.83 13H20z"/>
+        </svg>
+    </button>
+
+    // Page title 
+    <h1 id="pageTitle">Benvenuto all'Introduzione al Gioco</h1>
+
+    //Buttons container 
+    <div id="buttonContainer" class="button-container">
+        <button id="playButton">Gioca</button>
+        <button id="rulesButton">Regole</button>
+        <button id="leaderboardButton">Classifica</button>
+    </div>
+
+    <script>
+        // Variable to keep track of the previous connection status
+        let previousStatus = null;
+
+        // Function to display the connection banner
+        function showConnectionBanner(status) {
+            const banner = document.getElementById('connectionBanner');
+            if (status === 'connected') {
+                banner.textContent = 'Connected to the server.';
+                banner.style.backgroundColor = 'green';
+            } else {
+                banner.textContent = 'Disconnected from the server.';
+                banner.style.backgroundColor = 'red';
+            }
+            banner.style.display = 'block';
+            // Make the banner vanish after 5 seconds
+            setTimeout(() => {
+                banner.style.display = 'none';
+            }, 5000);
+        }
+
+        // Function to update the connection status
+        function updateConnectionStatus() {
+            fetch('/api/connection_status')
+                .then(response => response.json())
+                .then(data => {
+                    const currentStatus = data.status;
+                    if (previousStatus === null) {
+                        // First time checking status; do not display any banner
+                        previousStatus = currentStatus;
+                    } else if (previousStatus !== currentStatus) {
+                        if (currentStatus === 'connected' && previousStatus === 'disconnected') {
+                            // Connection was established
+                            showConnectionBanner('connected');
+                        } else if (currentStatus === 'disconnected' && previousStatus === 'connected') {
+                            // Connection was lost
+                            showConnectionBanner('disconnected');
+                        }
+                        previousStatus = currentStatus;
+                    }
+                    // Do nothing if status hasn't changed
+                })
+                .catch(error => console.error('Error fetching connection status:', error));
+        }
+        
+        // Start polling the connection status every 5 seconds
+        setInterval(updateConnectionStatus, 5000);
+        // Also, check the status immediately when the page loads
+        updateConnectionStatus();
+
+        // Function to show the stress modal
+        function showStressModal() {
+            const modal = document.getElementById('gamePreambleModal');
+            modal.style.display = 'block';
+        }
+
+        // Stress Confirm Button action
+        document.getElementById('stressConfirmButton').addEventListener('click', () => {
+            const modal = document.getElementById('gamePreambleModal');
+            modal.style.display = 'none';
+        });
+
+        // Function to proceed to the game
+        function proceedToGame() {
+            fetch('/api/game', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+            })
+                .then(() => {
+                    window.location.href = '/game.html';
+                })
+                .catch((error) => console.error('Error:', error));
+        }
+        /*
+        // Play button action
+        document.getElementById('playButton').addEventListener('click', () => {
+            // Fetch rolling averages
+            fetch('/api/rolling_averages')
+                .then(response => response.json())
+                .then(data => {
+                    const workload = data.rolling_avg_workload;
+                    const stress = data.rolling_avg_stress;
+
+                    if (workload !== null && stress !== null) {
+                        const sum = workload + stress;
+                        if (sum > 3) {
+                            // Show the stress modal
+                            showStressModal();
+                        } else {
+                            // Proceed to the game
+                            proceedToGame();
+                        }
+                    } else {
+                        // Proceed to the game if data is not available
+                        proceedToGame();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching rolling averages:', error);
+                    // Proceed to the game in case of error
+                    proceedToGame();
+                });
+        });*/
+
+        document.getElementById('playButton').addEventListener('click', () => {
+            // Check connection status first
+            fetch('/api/connection_status')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status !== 'connected') {
+                        console.log("No connection to server2.py, proceeding to game.");
+                        proceedToGame();
+                        return;
+                    }
+
+                    // Fetch rolling averages if connected
+                    fetch('/api/rolling_averages')
+                        .then(response => response.json())
+                        .then(data => {
+                            const workload = data.rolling_avg_workload;
+                            const stress = data.rolling_avg_stress;
+
+                            if (workload !== null && stress !== null) {
+                                const sum = workload + stress;
+                                if (sum > 3) {
+                                    // Show the stress modal
+                                    showStressModal();
+                                } else {
+                                    // Proceed to the game
+                                    proceedToGame();
+                                }
+                            } else {
+                                // Proceed to the game if data is not available
+                                proceedToGame();
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error fetching rolling averages:', error);
+                            // Proceed to the game in case of error
+                            proceedToGame();
+                        });
+                })
+                .catch(error => {
+                    console.error('Error checking connection status:', error);
+                    // Proceed to the game in case of error
+                    proceedToGame();
+                });
+        });
+
+
+        // Stress Confirm Button action
+        document.getElementById('stressConfirmButton').addEventListener('click', () => {
+            const modal = document.getElementById('stressModal');
+            modal.style.display = 'none';
+        });
+
+        // Rules button action
+        document.getElementById('rulesButton').addEventListener('click', () => {
+            window.location.href = '/regole.html'; 
+        });
+
+        // Leaderboard button action
+        document.getElementById('leaderboardButton').addEventListener('click', () => {
+            window.location.href = '/classifica.html'; 
+        });
+
+        // Back button action
+        document.getElementById('arrowButton').addEventListener('click', () => {
+            fetch('/api/choice', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+            })
+                .then(() => {
+                    window.location.href = '/welcome.html';
+                })
+                .catch((error) => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>
+-->
+
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -10,6 +392,14 @@
 <body id="welcomePage">
     <!-- Banner for connection status -->
     <div id="connectionBanner" class="banner" style="display: none;"></div>
+
+    <!-- Stress Level Modal -->
+    <div id="gamePreambleModal">
+        <div class="modal-content">
+            <p>I tuoi livelli di stress sono troppo alti, prova a rilassarti prima di iniziare a giocare</p>
+            <button id="stressConfirmButton">OK</button>
+        </div>
+    </div>
 
     <!-- Back button -->
     <button id="arrowButton">
@@ -79,7 +469,81 @@
         // Also, check the status immediately when the page loads
         updateConnectionStatus();
 
-        // Existing JavaScript code
+        // Function to show the stress modal
+        function showStressModal() {
+            const modal = document.getElementById('gamePreambleModal');
+            modal.style.display = 'flex';
+        }
+
+        // Function to proceed to the game
+        function proceedToGame() {
+            fetch('/api/game', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+            })
+                .then(() => {
+                    window.location.href = '/game.html';
+                })
+                .catch((error) => console.error('Error:', error));
+        }
+
+        // Play button action
+        document.getElementById('playButton').addEventListener('click', () => {
+            // Check connection status first
+            fetch('/api/connection_status')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status !== 'connected') {
+                        console.log("No connection to server2.py, proceeding to game.");
+                        proceedToGame();
+                        return;
+                    }
+
+                    // Fetch rolling averages if connected
+                    fetch('/api/rolling_averages')
+                        .then(response => response.json())
+                        .then(data => {
+                            let workload = data.rolling_avg_workload;
+                            let stress = data.rolling_avg_stress;
+
+                            // Convert to numbers
+                            workload = parseFloat(workload);
+                            stress = parseFloat(stress);
+
+                            if (Number.isFinite(workload) && Number.isFinite(stress)) {
+                                const sum = workload + stress;
+                                console.log(`Workload: ${workload}, Stress: ${stress}, Sum: ${sum}`);
+
+                                if (sum > 2) {
+                                    // Show the stress modal
+                                    showStressModal();
+                                } else {
+                                    // Proceed to the game
+                                    proceedToGame();
+                                }
+                            } else {
+                                // Proceed to the game if data is not available or invalid
+                                proceedToGame();
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error fetching rolling averages:', error);
+                            // Proceed to the game in case of error
+                            proceedToGame();
+                        });
+                })
+                .catch(error => {
+                    console.error('Error checking connection status:', error);
+                    // Proceed to the game in case of error
+                    proceedToGame();
+                });
+        });
+
+        // Stress Confirm Button action
+        document.getElementById('stressConfirmButton').addEventListener('click', () => {
+            const modal = document.getElementById('gamePreambleModal');
+            modal.style.display = 'none';
+        });
 
         // Rules button action
         document.getElementById('rulesButton').addEventListener('click', () => {
@@ -89,18 +553,6 @@
         // Leaderboard button action
         document.getElementById('leaderboardButton').addEventListener('click', () => {
             window.location.href = '/classifica.html'; 
-        });
-
-        // Play button action
-        document.getElementById('playButton').addEventListener('click', () => {
-            fetch('/api/game', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-            })
-                .then(() => {
-                    window.location.href = '/game.html';
-                })
-                .catch((error) => console.error('Error:', error));
         });
 
         // Back button action
@@ -117,4 +569,3 @@
     </script>
 </body>
 </html>
-
