@@ -503,6 +503,8 @@ import time
 import socket
 import threading
 from http.server import SimpleHTTPRequestHandler, HTTPServer
+from collections import deque
+
 
 # Define states
 INITIAL_STATE = "INITIAL_STATE"
@@ -511,6 +513,13 @@ CHOICE = "CHOICE"
 DOING_EXERCISES = "DOING_EXERCISES"
 GAME_PREAMBLE = "GAME_PREAMBLE"
 GAME = "GAME"
+
+
+ROLLING_WINDOW_SIZE = 10
+# Deques to store recent values
+workload_values = deque(maxlen=ROLLING_WINDOW_SIZE)
+stress_values = deque(maxlen=ROLLING_WINDOW_SIZE)
+
 
 # Globals
 current_state = INITIAL_STATE
@@ -524,6 +533,11 @@ connection_status = "disconnected"
 connection_lock = threading.Lock()
 client_socket = None
 connection_thread = None
+
+# Global variables for rolling averages
+rolling_avg_workload = None
+rolling_avg_stress = None
+
 
 # Load and save users
 def load_users():
@@ -556,23 +570,43 @@ def handle_introduction_state():
     connection_thread = threading.Thread(target=attempt_connection, daemon=True)
     connection_thread.start()
 
-
 def listen_to_second_server():
-    global client_socket, connection_status
+    global client_socket, connection_status, rolling_avg_workload, rolling_avg_stress
     try:
         while True:
             data = client_socket.recv(1024)
             if not data:
                 break  # Connection closed
-            # Optionally process data here
+            
+            try:
+                message = data.decode('utf-8').strip()
+                workload_str, stress_str = message.split(',')
+                workload = float(workload_str)
+                stress = float(stress_str)
+            except ValueError as ve:
+                print(f"Error parsing data: {ve}")
+                continue  # Skip to the next iteration
+
+            # Update rolling averages
+            with connection_lock:
+                workload_values.append(workload)
+                stress_values.append(stress)
+                rolling_avg_workload = sum(workload_values) / len(workload_values)
+                rolling_avg_stress = sum(stress_values) / len(stress_values)
+
+            # Optional: Print or log the rolling averages
+            print(f"Rolling Average - Workload: {rolling_avg_workload:.2f}, Stress: {rolling_avg_stress:.2f}")
+
     except Exception as e:
         print(f"Connection to second server lost: {e}")
     finally:
         with connection_lock:
+            if client_socket:
+                client_socket.close()
+                client_socket = None
             connection_status = "disconnected"
-            client_socket = None
-        # Attempt reconnection
         attempt_connection()
+
 
 
 

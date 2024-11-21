@@ -54,7 +54,7 @@ def start_server():
             csv_reader = csv.DictReader(csvfile,delimiter=';')
             for row in csv_reader:
                 print(row.keys())
-                message = ','.join((row['workload'],row['stress'],row['workload_raw'],row['stress_raw']))  # Convert row to a string
+                message = ','.join((row['workload'],row['stress'])) #,row['workload_raw'],row['stress_raw']))  # Convert row to a string
                 conn.sendall(message.encode('utf-8'))  # Send as UTF-8
                 print(f"Sent: {message}")
                 time.sleep(0.2)  # Wait 0.2 seconds
