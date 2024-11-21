@@ -377,7 +377,7 @@ button:active {
 }
 
 
-.banner {
+#connectionBanner .banner {
     position: fixed;
     top: 0;
     left: 0;

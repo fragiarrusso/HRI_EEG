@@ -1,20 +1,28 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
+    <!-- Existing head content -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Regole del Gioco</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css"> 
 </head>
 <body id="rulesPage">
-    <!-- Pulsante per tornare indietro -->
-    <button id="arrowButton" onclick="window.location.href='/game_preamble.html'">
+    <!-- Banner for connection status -->
+    <div id="connectionBanner" class="banner" style="display: none;"></div>
+
+    <!-- Back button -->
+    <button id="arrowButton">
+        <!-- SVG content for the back arrow -->
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
             <path d="M20 11H7.83l5.59-5.59-1.41-1.41L3.83 12l8.18 8.18 1.41-1.41L7.83 13H20z"/>
         </svg>
     </button>
 
+    <!-- Page title -->
     <h1 id="rulesTitle">Regole del Gioco</h1>
+
+    <!-- Rules description -->
     <p id="rulesDescription">
         Benvenuto al gioco del Quadrato Saltellante! Ecco come giocare:
         <br><br>
@@ -30,6 +38,69 @@
         <br><br>
         Buona fortuna e divertiti a giocare!
     </p>
-    <button class="backButton" onclick="window.location.href = 'game_preamble.html';">Torna indietro</button>
+
+    <!-- Back button -->
+    <button class="backButton" id="backButton">Torna indietro</button>
+
+    <script>
+        // Variable to keep track of the previous connection status
+        let previousStatus = null;
+
+        // Function to display the connection banner
+        function showConnectionBanner(status) {
+            const banner = document.getElementById('connectionBanner');
+            if (status === 'connected') {
+                banner.textContent = 'Connected to the server.';
+                banner.style.backgroundColor = 'green';
+            } else {
+                banner.textContent = 'Disconnected from the server.';
+                banner.style.backgroundColor = 'red';
+            }
+            banner.style.display = 'block';
+            // Make the banner vanish after 5 seconds
+            setTimeout(() => {
+                banner.style.display = 'none';
+            }, 5000);
+        }
+
+        // Function to update the connection status
+        function updateConnectionStatus() {
+            fetch('/api/connection_status')
+                .then(response => response.json())
+                .then(data => {
+                    const currentStatus = data.status;
+                    if (previousStatus === null) {
+                        // First time checking status; do not display any banner
+                        previousStatus = currentStatus;
+                    } else if (previousStatus !== currentStatus) {
+                        if (currentStatus === 'connected' && previousStatus === 'disconnected') {
+                            // Connection was established
+                            showConnectionBanner('connected');
+                        } else if (currentStatus === 'disconnected' && previousStatus === 'connected') {
+                            // Connection was lost
+                            showConnectionBanner('disconnected');
+                        }
+                        previousStatus = currentStatus;
+                    }
+                    // Do nothing if status hasn't changed
+                })
+                .catch(error => console.error('Error fetching connection status:', error));
+        }
+
+        // Start polling the connection status every 5 seconds
+        setInterval(updateConnectionStatus, 5000);
+        // Also, check the status immediately when the page loads
+        updateConnectionStatus();
+
+        // Back button action
+        document.getElementById('arrowButton').addEventListener('click', () => {
+            window.location.href = '/game_preamble.html';
+        });
+
+        // "Torna indietro" button action
+        document.getElementById('backButton').addEventListener('click', () => {
+            window.location.href = '/game_preamble.html';
+        });
+    </script>
 </body>
 </html>
