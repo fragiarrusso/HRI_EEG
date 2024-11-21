@@ -557,6 +557,23 @@ def handle_introduction_state():
     connection_thread.start()
 
 
+def listen_to_second_server():
+    global client_socket, connection_status
+    try:
+        while True:
+            data = client_socket.recv(1024)
+            if not data:
+                break  # Connection closed
+            # Optionally process data here
+    except Exception as e:
+        print(f"Connection to second server lost: {e}")
+    finally:
+        with connection_lock:
+            connection_status = "disconnected"
+            client_socket = None
+        # Attempt reconnection
+        attempt_connection()
+
 
 
 
@@ -566,26 +583,33 @@ def attempt_connection():
         try:
             # Try to establish the connection
             client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            client_socket.connect(('localhost', 9000))  # Replace 'localhost' and 9000 with your second server's host and port
+            client_socket.connect(('localhost', 9000))  # Replace with your server's host and port
             with connection_lock:
                 connection_status = "connected"
             print("Connected to the second server.")
-            # Optionally, you can add code here to listen or interact with the second server
+            # Start the listener thread
+            listener_thread = threading.Thread(target=listen_to_second_server, daemon=True)
+            listener_thread.start()
             break  # Exit the loop once connected
         except Exception as e:
             with connection_lock:
                 connection_status = "disconnected"
             print(f"Connection attempt failed: {e}")
-            time.sleep(5)  # Wait before retrying
+            time.sleep(10)  # Wait before retrying
+
 
 # HTTP request handler
 class StateHandler(SimpleHTTPRequestHandler):
     def do_GET(self):
-        """Serve static files."""
-        global current_state, current_user, welcome_message
-        if self.path.startswith("/api/"):
-            self.send_response(405)
+        global current_state, current_user, welcome_message, connection_status
+        if self.path == "/api/connection_status":
+            # Return the connection status
+            with connection_lock:
+                status = connection_status
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
             self.end_headers()
+            self.wfile.write(json.dumps({"status": status}).encode('utf-8'))
             return
 
         # Determine the file to serve based on current state
@@ -639,7 +663,7 @@ class StateHandler(SimpleHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(b"Invalid JSON")
             return
-
+        
         # Handle requests based on current state
         if current_state == INTRODUCTION:
             if self.path == "/api/choice":
@@ -731,10 +755,23 @@ class StateHandler(SimpleHTTPRequestHandler):
                     "message": "Transitioned to DOING_EXERCISES"
                 }).encode('utf-8'))
                 
-            elif self.path == "/api/introduction":
+                
+            elif self.path == "/api/introduction": 
                 # Return to INTRODUCTION
+                global client_socket, connection_status #da togliere(?)
                 current_state = INTRODUCTION
                 current_user = None
+                # Close the connection to the second server
+                if client_socket:
+                    try:
+                        client_socket.close()
+                        print("Closed connection to the second server.")
+                    except Exception as e:
+                        print(f"Error closing connection: {e}")
+                    finally:
+                        client_socket = None
+                        with connection_lock:
+                            connection_status = "disconnected"
                 print("Returned to INTRODUCTION.")
                 self.send_response(200)
                 self.end_headers()
@@ -745,7 +782,7 @@ class StateHandler(SimpleHTTPRequestHandler):
                 self.send_response(404)
                 self.end_headers()
                 self.wfile.write(b"Unknown endpoint in CHOICE state")
-            
+
 
         elif current_state == GAME_PREAMBLE:
             if self.path == "/api/game":
@@ -802,6 +839,13 @@ def start_http_server():
         httpd.serve_forever()
     except KeyboardInterrupt:
         print("Shutting down Python server...")
+        if client_socket:
+            try:
+                client_socket.close()
+                print("Closed connection to the second server.")
+            except Exception as e:
+                print(f"Error closing connection: {e}")
+
 
 # Main entry point
 if __name__ == "__main__":

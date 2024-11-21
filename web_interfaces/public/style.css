@@ -3,6 +3,7 @@
 
 
 
+
 body {
     font-family: Arial, sans-serif;
     text-align: center;
@@ -376,3 +377,14 @@ button:active {
 }
 
 
+.banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    font-weight: bold;
+    z-index: 1000;
+}
