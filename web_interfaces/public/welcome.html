@@ -12,45 +12,49 @@
             <path d="M20 11H7.83l5.59-5.59-1.41-1.41L3.83 12l8.18 8.18 1.41-1.41L7.83 13H20z"/>
         </svg>
     </button>
-    <h1 id="welcomeMessage"></h1>
-    <!-- Contenitore per i pulsanti -->
+    <h1 id="welcomeMessage">{{welcome_message}}</h1>
     <div class="button-container">
         <button id="leftButton">Esercizi</button>
         <button id="rightButton">Vai al Gioco</button>
     </div>
 
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const name = urlParams.get('name');
-        const exists = urlParams.get('exists') === 'true';
-
-       // Set welcome message
-        const welcomeMessage = document.getElementById('welcomeMessage');
-        if (exists) {
-            welcomeMessage.textContent = `Bentornato, ${name}. Cosa vorresti fare?`;
-        } else {
-            welcomeMessage.textContent = `Benvenuto, ${name}. Cosa vorresti fare?`;
-        } 
-
-        // Left button action
-        document.getElementById('leftButton').addEventListener('click', () => {
-            fetch('/api/left-button', {
+        // Back button action
+        document.getElementById('arrowButton').addEventListener('click', () => {
+            fetch('/api/introduction', {
                 method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
             })
-                .then((response) => response.json())
-                .then((data) => {
-                    console.log(data.message);
+                .then(() => {
+                    window.location.href = '/';
                 })
                 .catch((error) => console.error('Error:', error));
         });
 
-        // Right button action: Redirect to the game
-        document.getElementById('rightButton').addEventListener('click', () => {
-            window.location.href = '/gameIntroduction.html';
+        // Left button action: Notify the server about DOING_EXERCISES
+        document.getElementById('leftButton').addEventListener('click', () => {
+            fetch('/api/exercise', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log(data.message);
+                    // Handle exercise logic or stay on the same page
+                })
+                .catch((error) => console.error('Error:', error));
         });
-                // Back button action: Go back to the previous page
-        document.getElementById('arrowButton').addEventListener('click', () => {
-            window.location.href = '/index.html';
+
+        // Right button action: Notify the server about GAME_PREAMBLE
+        document.getElementById('rightButton').addEventListener('click', () => {
+            fetch('/api/game_preamble', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+            })
+                .then(() => {
+                    window.location.href = '/game_preamble.html';
+                })
+                .catch((error) => console.error('Error:', error));
         });
     </script>
 </body>

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head> 
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Insert Name</title>
@@ -19,7 +19,7 @@
     <!-- Aggiungi una nuova riga per il tasto SPAZIO e CANCELLA -->
     <div class="keyboard-row" id="row4">
         <button id="spaceButton" class="keyboard-button">SPAZIO</button>
-        <button id="deleteButton" class="keyboard-button">CANCELLA</button> <!-- Pulsante CANCELLA -->
+        <button id="deleteButton" class="keyboard-button">CANCELLA</button>
     </div>
 
     <!-- Modale per nome vuoto -->
@@ -35,10 +35,10 @@
     <!-- Modale personalizzato -->
     <div id="customModal" class="modal">
         <div class="modal-content">
-            <p id="modalMessage">Il nome inserito esiste già. Vuoi continuare?</p>
+            <p id="modalMessage">Il nome utente è già stato inserito, conferma di essere tu</p>
             <div class="modal-buttons">
-                <button id="confirmButton">Conferma</button>
-                <button id="cancelButton">Annulla</button>
+                <button id="confirmButton">Sì</button>
+                <button id="cancelButton">No</button>
             </div>
         </div>
     </div>
@@ -47,19 +47,17 @@
         const nameContainer = document.getElementById('nameContainer');
         const submitButton = document.getElementById('submitName');
         const customModal = document.getElementById('customModal');
-        const modalMessage = document.getElementById('modalMessage');
         const confirmButton = document.getElementById('confirmButton');
         const cancelButton = document.getElementById('cancelButton');
-        const emptyNameModal = document.getElementById('emptyNameModal'); // Nuovo modale per nome vuoto
-        const emptyNameMessage = document.getElementById('emptyNameMessage'); // Messaggio per il modale del nome vuoto
+        const emptyNameModal = document.getElementById('emptyNameModal'); 
         let name = '';
 
-        // Definisci le lettere per ciascuna riga
+        // Define keyboard rows
         const row1 = 'QWERTYUIOP'.split('');
         const row2 = 'ASDFGHJKL'.split('');
         const row3 = 'ZXCVBNM'.split('');
 
-        // Funzione per creare i pulsanti
+        // Create keyboard buttons
         function createButtons(letters, containerId) {
             const container = document.getElementById(containerId);
             letters.forEach((letter) => {
@@ -74,67 +72,73 @@
             });
         }
 
-        // Crea i pulsanti per ciascuna riga
+        // Generate keyboard buttons
         createButtons(row1, 'row1');
         createButtons(row2, 'row2');
         createButtons(row3, 'row3');
 
-        // Aggiungi il tasto SPAZIO
+        // Space button functionality
         document.getElementById('spaceButton').addEventListener('click', () => {
             name += ' ';
-            nameContainer.textContent = name; // Mostra il nome con lo spazio
+            nameContainer.textContent = name;
         });
 
-        // Aggiungi il tasto CANCELLA
+        // Delete button functionality
         document.getElementById('deleteButton').addEventListener('click', () => {
             if (name.length > 0) {
-                name = name.slice(0, -1); // Rimuovi l'ultimo carattere
-                nameContainer.textContent = name; // Aggiorna la visualizzazione del nome
+                name = name.slice(0, -1);
+                nameContainer.textContent = name;
             }
         });
 
-        // Funzione per inviare il nome
+        // Submit name functionality
         submitButton.addEventListener('click', () => {
             if (name.trim() === '') {
-                // Se il nome è vuoto, mostra il modale per nome non valido
                 emptyNameModal.style.display = 'flex';
                 return;
             }
 
-            fetch('/api/submit-name', {
+            fetch('/api/choice', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name }),
             })
-            .then((response) => response.json())
-            .then((data) => {
-                if (data.exists) {
-                    // Mostra il modale se il nickname esiste
-                    modalMessage.textContent = data.message; // Mostra il messaggio personalizzato
-                    customModal.style.display = 'flex'; // Mostra il modale solo quando il nome esiste
-                } else {
-                    // Se il nickname non esiste, continua come al solito
-                    window.location.href = `/welcome.html?name=${name}&exists=false`;
-                }
-            })
-            .catch((error) => console.error('Error:', error));
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.exists) {
+                        // Show modal if the username exists
+                        customModal.style.display = 'flex';
+                    } else {
+                        // Redirect to welcome.html without query parameters
+                        window.location.href = '/welcome.html';
+                    }
+                })
+                .catch((error) => console.error('Error:', error));
         });
 
-        // Funzione per chiudere il modale del nome vuoto
+        // Close empty name modal
         document.getElementById('closeEmptyNameModal').addEventListener('click', () => {
             emptyNameModal.style.display = 'none';
         });
 
-        // Funzione per chiudere il modale e continuare con la conferma
+        // Confirm and redirect
         confirmButton.addEventListener('click', () => {
-            window.location.href = `/welcome.html?name=${name}&exists=true`;
+            fetch('/api/confirm', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name }),
+            })
+            .then(() => {
+                window.location.href = '/welcome.html';
+            })
+            .catch((error) => console.error('Error:', error));
         });
 
-        // Funzione per chiudere il modale senza fare nulla
+        // Cancel and clear name
         cancelButton.addEventListener('click', () => {
             name = '';
             nameContainer.textContent = name;
-            customModal.style.display = 'none'; // Nascondi il modale
+            customModal.style.display = 'none';
         });
     </script>
 </body>

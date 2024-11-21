@@ -7,11 +7,13 @@ from threading import Thread
 # Define states
 INITIAL_STATE = "INITIAL_STATE"
 PRESENTATION = "PRESENTATION"
-PLAYING_TABLET = "PLAYING_TABLET"
+CHOICE = "CHOICE"
 DOING_EXERCISES = "DOING_EXERCISES"
+GAME_PREAMBLE = "GAME_PREAMBLE"
+GAME = "GAME" 
 
 # List of states
-states = [INITIAL_STATE, PRESENTATION, PLAYING_TABLET, DOING_EXERCISES]
+states = [INITIAL_STATE, PRESENTATION, CHOICE, DOING_EXERCISES, GAME_PREAMBLE ,GAME]
 current_state = INITIAL_STATE
 
 # Globals for cleanup
@@ -42,7 +44,7 @@ def start_tcp_server():
         while True:
             client_socket, addr = server_socket.accept()
             print("Connected by", addr)
-            handle_client(client_socket)
+            main_loop(client_socket)
 
     except KeyboardInterrupt:
         print("Shutting down the Python server...")
@@ -50,8 +52,11 @@ def start_tcp_server():
         if server_socket:
             server_socket.close()
             print("Python server socket closed")
+            
+def start_EEG_server():
+    return
 
-def handle_client(client_socket):
+def main_loop(client_socket):
     global current_state
 
     try:
@@ -69,10 +74,15 @@ def handle_client(client_socket):
             print(f"Received message: {message}")
 
             if message.get("type") == "say":
-                current_state = PLAYING_TABLET
+                current_state = CHOICE
+                
+            if message.get("type")  == "game":
+                current_state = GAME
+                #avvia il caschetto
+                
             elif message.get("type") == "exercise":
                 current_state = DOING_EXERCISES
-
+                
             print(f"Transitioned to state: {current_state}")
 
             response = json.dumps({"message": "State updated successfully"})
@@ -83,7 +93,7 @@ def handle_client(client_socket):
         client_socket.close()
         print("Client disconnected")
 
-# Gracefully stop both servers on CTRL+C
+# stop both servers on CTRL+C and free sockets 
 def cleanup():
     global node_process, server_socket
     if node_process:
