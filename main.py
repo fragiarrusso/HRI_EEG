@@ -1,57 +1,28 @@
-import os
-import sys
-import time
 
-sys.path.append(os.getenv('PEPPER_TOOLS_HOME') + '/cmd_server')
-
-import pepper_cmd
-from pepper_cmd import *
+from robot_comunicator import robotCommunicator
 from robot import *
-from naoqi import ALProxy
-project_folder = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.append(project_folder)
 
-# Define states
-INITIAL_STATE = "INITIAL_STATE"
-PRESENTATION = "PRESENTATION"
-PLAYING_TABLET = "PLAYING_TABLET"
-DOING_EXERCISES = "DOING_EXERCISES"
+#change according to the port that Choreographe opens
+robot = Robot(40091)
 
-states = [INITIAL_STATE, PRESENTATION]
-current_state = INITIAL_STATE
+robotcommunicator = robotCommunicator()
 
-robot_ip = "127.0.0.1"  # Replace with robot's IP address or simulator IP
-port = 36233
-
-tts = ALProxy("ALTextToSpeech", robot_ip, port)
-memory = ALProxy("ALMemory", robot_ip, port)
-motion = ALProxy("ALMotion", robot_ip, port)
+robot.say('Hello')
 
 
+while True:
+    action =robotCommunicator.read_Message_Socket()
+    if action[0] == 'say':
+        robot.say(action[1])
+    elif action[0] == 'move':
+        if action[1] == 'bigcircle':
+            robot.bigcircle(action[2])
+        elif action[1] == 'push':
+            robot.pushout(action[2])
 
-'''begin()
-
-pepper_cmd.robot.say('Hello')
-
-i=0
-while i<=5:
-    result=robotCommunicator.read_EEG_Message_Socket()
-    pepper_cmd.robot.say(result)
-    i+=1
-
-pepper_cmd.robot.say('Bye')
-end()
-'''
-
-
-
+robot.say('Bye')
 
 #motion.moveTo(0.5, 0, 0)  # Move forward 0.5 meters
-
-
-
-
-
 
 '''
 

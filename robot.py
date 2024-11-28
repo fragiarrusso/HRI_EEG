@@ -252,18 +252,18 @@ class Robot():
 
         return
 
-    def bigcircle(self):
+    def bigcircle(self, speed):
 
         self.startPosition()
-        time.sleep(0.5)
+        time.sleep(speed)
         self.armsinfrontPosition()
-        time.sleep(0.5)
+        time.sleep(speed)
         self.armsupPosition()
-        time.sleep(0.5)
+        time.sleep(speed)
         self.armsoutPosition()
-        time.sleep(0.5)
+        time.sleep(speed)
         self.startPosition()
-        time.sleep(0.5)
+        time.sleep(speed)
 
         return
 
@@ -292,12 +292,12 @@ class Robot():
 
         return
 
-    def pushout(self):
+    def pushout(self,speed):
 
         self.armsoutPosition()
-        time.sleep(0.5)
+        time.sleep(speed)
         self.armsoutfrontPosition()
-        time.sleep(0.5)
+        time.sleep(speed)
 
         return
 
