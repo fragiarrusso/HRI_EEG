@@ -263,6 +263,7 @@ class Robot():
         self.armsoutPosition()
         time.sleep(0.5)
         self.startPosition()
+        time.sleep(0.5)
 
         return
 
@@ -290,6 +291,16 @@ class Robot():
         self.motion_service.setAngles("LElbowYaw", Lelbow_yaw_angle, fractionMaxSpeed)
 
         return
+
+    def pushout(self):
+
+        self.armsoutPosition()
+        time.sleep(0.5)
+        self.armsoutfrontPosition()
+        time.sleep(0.5)
+
+        return
+
 
     def shieldPosition(self):
         
