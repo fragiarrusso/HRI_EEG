@@ -1,54 +1,66 @@
-import socket
+import BaseHTTPServer
 import json
+from robot import Robot
+
+global robot
+
+class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
+    def do_POST(self):
+        """Handle POST requests."""
+        if self.path == "/act":
+            content_length = int(self.headers.getheader('Content-Length'))
+            post_data = self.rfile.read(content_length)
+            try:
+                data = json.loads(post_data)
+                client = str(data.get("client"))
+                state = str(data.get("state"))
+                action = str(data.get("action"))
+                additional_data = str(data.get("additional_data", {}))
+
+                # Log received data
+                print("Received data from client:")
+                print("  Client: "+client)
+                print("  State: "+state)
+                print("  Action: "+ action)
+                print("  Additional Data: " + additional_data)
+                print(action == 'say')
+                
+                if action == 'say':
+                    robot.say(additional_data)
+                elif action == 'move':
+                    if additional_data == 'bigcircle':
+                        robot.bigcircle(action[2])
+                    elif additional_data == 'push':
+                        robot.pushout(action[2])
+
+                # Respond with a success message
+                response = {
+                    "status": "success",
+                    "message": "Data received",
+                    "client": client,
+                    "state": state,
+                }
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps(response))
+            except Exception as e:
+                # Handle JSON parsing or other errors
+                self.send_response(400)
+                self.send_header("Content-Type", "text/plain")
+                self.end_headers()
+                self.wfile.write("Error processing request: "+ str(e))
+        else:
+            self.send_response(404)
+            self.end_headers()
+            self.wfile.write("Endpoint not found")
+        
 
 
-class RobotCommunicator():
-    def __init__(self, ip = '172.17.0.1', port = 9001):
-        self.initSocket(ip, port)
-        return
-    
-    def initSocket(self, ip, port):
-        self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.client_socket.connect((ip, port))  # Assicurati che la porta 12345 sia esposta dal Docker
-        return
-
-    def closeSocketConnection(self):
-        self.client_socket.close()
-        return
-
-    def sendMessageSocket(self, message):
-        self.client_socket.sendall(bytes(json.dumps(message).encode('UTF-8')))
-        return
-    
-    def readMessageSocket(self):
-        response = self.client_socket.recv(1024)
-        return response.decode()
-
-
-    def read_EEG_Message_Socket(self):
-        response = self.client_socket.recv(1024)
-        return response.decode('utf-8')
-
-    
-    def say(self, message):
-        socketMessage = {
-            'action': 'say',
-            'message': message
-        }
-
-        self.sendMessageSocket(socketMessage)
-        self.readMessageSocket()
-
-        return
-    
-    def move(self, action):
-        socketMessage = {
-            'action': action
-        }
-
-        self.sendMessageSocket(socketMessage)
-        self.readMessageSocket()
-
-    
-        return
-    
+def RobotCommunicator(server_class=BaseHTTPServer.HTTPServer, handler_class=RequestHandler, port=9001):
+    global robot
+    robot = Robot(40091)
+    server_address = ('172.17.0.1', port)
+    httpd = server_class(server_address, handler_class)
+    print("Python 2 HTTP server running on port "+str(port))
+    httpd.serve_forever()

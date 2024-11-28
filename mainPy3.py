@@ -1433,7 +1433,7 @@ def attempt_connection():
 
 
 def call_to_docker_server(state, action, additional_data=None):
-    url = "http://localhost:9001/act"
+    url = "http://172.17.0.1:9001/act"
     payload = {"client":0, "state": state, "action": action, "additional_data": additional_data }
     try:
         response = requests.post(url, json=payload)

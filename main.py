@@ -1,24 +1,18 @@
 
-from robot_comunicator import robotCommunicator
+from robot_comunicator import RobotCommunicator
 from robot import *
 
 #change according to the port that Choreographe opens
-robot = Robot(40091)
 
-robotcommunicator = robotCommunicator()
 
-robot.say('Hello')
+robotcommunicator = RobotCommunicator()
+
 
 
 while True:
     action = robotcommunicator.read_Message_Socket()
-    if action[0] == 'say':
-        robot.say(action[1])
-    elif action[0] == 'move':
-        if action[1] == 'bigcircle':
-            robot.bigcircle(action[2])
-        elif action[1] == 'push':
-            robot.pushout(action[2])
+    print(action)
+
 
 robot.say('Bye')
 
