@@ -11,7 +11,7 @@ robot.say('Hello')
 
 
 while True:
-    action =robotCommunicator.read_Message_Socket()
+    action = robotcommunicator.read_Message_Socket()
     if action[0] == 'say':
         robot.say(action[1])
     elif action[0] == 'move':

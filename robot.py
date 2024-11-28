@@ -1,4 +1,4 @@
-import qi
+import qi # type: ignore
 import time
 import math
 import sys
