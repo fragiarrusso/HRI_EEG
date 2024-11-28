@@ -1,11 +1,9 @@
-import os
-import sys
 import socket
 import json
 
 
 class RobotCommunicator():
-    def __init__(self, ip = '172.17.0.1', port = 9000):
+    def __init__(self, ip = '172.17.0.1', port = 9001):
         self.initSocket(ip, port)
         return
     
