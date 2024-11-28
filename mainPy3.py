@@ -1302,6 +1302,7 @@ import socket
 import threading
 from http.server import SimpleHTTPRequestHandler, HTTPServer
 from collections import deque
+import requests
 
 # Define states
 INITIAL_STATE = "INITIAL_STATE"
@@ -1359,6 +1360,7 @@ def handle_initial_state():
     global current_state
     print("Starting INITIAL_STATE...")
     time.sleep(2)  # Simulate a short delay
+    call_to_docker_server(current_state, 'say', "Ciao, Sono Pepper")
     current_state = INTRODUCTION
     print("Transitioned to INTRODUCTION.")
 
@@ -1429,6 +1431,19 @@ def attempt_connection():
             print(f"Connection attempt failed: {e}")
             time.sleep(10)  # Wait before retrying
 
+
+def call_to_docker_server(state, action, additional_data=None):
+    url = "http://localhost:9001/act"
+    payload = {"client":0, "state": state, "action": action, "additional_data": additional_data }
+    try:
+        response = requests.post(url, json=payload)
+        if response.status_code == 200:
+            print(f"Successfully notified external server: {response.json()}")
+        else:
+            print(f"Failed to notify external server: {response.status_code} - {response.text}")
+    except Exception as e:
+        print(f"Error during notification: {e}")    
+        
 # HTTP request handler
 class StateHandler(SimpleHTTPRequestHandler):
     def do_GET(self):
@@ -1536,8 +1551,10 @@ class StateHandler(SimpleHTTPRequestHandler):
                 name = data.get("name")
                 if not name:
                     self.send_response(400)
+                    call_to_docker_server(current_state, 'say', "inserisci un nome valido")
                     self.end_headers()
                     self.wfile.write(b"Name is required")
+                    
                     return
 
                 users = load_users()
@@ -1545,12 +1562,15 @@ class StateHandler(SimpleHTTPRequestHandler):
 
                 if not user:
                     # New user
+                    
                     user = {"name": name, "last": 0, "avg": 0, "last_level": 0}
                     users.append(user)
                     save_users(users)
                     print(f"Benvenuto {name}")
                     current_user = name
                     welcome_message = f"Benvenuto, {name}"
+                    call_to_docker_server(current_state, 'say', welcome_message)
+                    
                     handle_introduction_state()
                     self.send_response(200)
                     self.end_headers()
@@ -1560,6 +1580,7 @@ class StateHandler(SimpleHTTPRequestHandler):
                     }).encode("utf-8"))
                 else:
                     # Existing user
+                    call_to_docker_server(current_state, 'say', f"Il nome {name} esiste già conferma di essere tu")
                     print(f"User {name} already exists. Awaiting confirmation.")
                     current_user = name  # Set current_user to handle name injection
                     welcome_message = ""  # Clear welcome message until confirmed
@@ -1584,6 +1605,7 @@ class StateHandler(SimpleHTTPRequestHandler):
                 if user:
                     current_user = name
                     welcome_message = f"Bentornato, {name}"
+                    call_to_docker_server(current_state, 'say', welcome_message)
                     handle_introduction_state()
                     print(f"Bentornato, {name}")
                     self.send_response(200)
@@ -1732,3 +1754,64 @@ def start_http_server():
 # Main entry point
 if __name__ == "__main__":
     start_http_server()
+
+
+'''
+serverpy2.py
+
+import BaseHTTPServer
+import json
+
+class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
+    def do_POST(self):
+        """Handle POST requests."""
+        if self.path == "/act":
+            content_length = int(self.headers.getheader('Content-Length'))
+            post_data = self.rfile.read(content_length)
+            try:
+                data = json.loads(post_data)
+                client = data.get("client")
+                state = data.get("state")
+                action = data.get("action")
+                additional_data = data.get("additional_data", {})
+
+                # Log received data
+                print("Received data from client:")
+                print(f"  Client: {client}")
+                print(f"  State: {state}")
+                print(f"  Action: {action}")
+                print(f"  Additional Data: {additional_data}")
+
+                # Respond with a success message
+                response = {
+                    "status": "success",
+                    "message": "Data received",
+                    "client": client,
+                    "state": state,
+                }
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps(response))
+            except Exception as e:
+                # Handle JSON parsing or other errors
+                self.send_response(400)
+                self.send_header("Content-Type", "text/plain")
+                self.end_headers()
+                self.wfile.write(f"Error processing request: {e}")
+        else:
+            self.send_response(404)
+            self.end_headers()
+            self.wfile.write("Endpoint not found")
+
+def run(server_class=BaseHTTPServer.HTTPServer, handler_class=RequestHandler, port=9001):
+    server_address = ('', port)
+    httpd = server_class(server_address, handler_class)
+    print(f"Python 2 HTTP server running on port {port}")
+    httpd.serve_forever()
+
+if __name__ == "__main__":
+    run()
+
+
+'''
