@@ -1688,11 +1688,20 @@ class StateHandler(SimpleHTTPRequestHandler):
             self.send_response(404)
             self.end_headers()
             self.wfile.write(b"No endpoints defined in DOING_EXERCISES state")
+
+
+
         elif current_state == GAME:
             # Handle POST requests in GAME state if needed
-            self.send_response(404)
-            self.end_headers()
-            self.wfile.write(b"No endpoints defined in GAME state")
+            if self.path == "/api/gamepreamble":
+                current_state = GAME_PREAMBLE
+                print("Transitioned to GAME PREAMBLE.")
+                self.send_response(404)
+                self.end_headers()
+                self.wfile.write(json.dumps({
+                    "message": "Transitioned to GAME PREAMBLE"
+                }).encode('utf-8'))
+                
         else:
             self.send_response(404)
             self.end_headers()
