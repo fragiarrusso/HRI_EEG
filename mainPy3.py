@@ -1569,7 +1569,7 @@ class StateHandler(SimpleHTTPRequestHandler):
                     print(f"Benvenuto {name}")
                     current_user = name
                     welcome_message = f"Benvenuto, {name}"
-                    call_to_docker_server(current_state, 'say', welcome_message)
+                    call_to_docker_server(current_state, 'say', welcome_message +" "+ "cosa vuoi fare?")
                     
                     handle_introduction_state()
                     self.send_response(200)
@@ -1580,7 +1580,7 @@ class StateHandler(SimpleHTTPRequestHandler):
                     }).encode("utf-8"))
                 else:
                     # Existing user
-                    call_to_docker_server(current_state, 'say', f"Il nome {name} esiste già conferma di essere tu")
+                    call_to_docker_server(current_state, 'say', f"Il nome {name} esiste già, conferma di essere tu")
                     print(f"User {name} already exists. Awaiting confirmation.")
                     current_user = name  # Set current_user to handle name injection
                     welcome_message = ""  # Clear welcome message until confirmed
@@ -1605,7 +1605,7 @@ class StateHandler(SimpleHTTPRequestHandler):
                 if user:
                     current_user = name
                     welcome_message = f"Bentornato, {name}"
-                    call_to_docker_server(current_state, 'say', welcome_message)
+                    call_to_docker_server(current_state, 'say', welcome_message+" "+"cosa vuoi fare?")
                     handle_introduction_state()
                     print(f"Bentornato, {name}")
                     self.send_response(200)
@@ -1622,7 +1622,6 @@ class StateHandler(SimpleHTTPRequestHandler):
                 self.end_headers()
                 self.wfile.write(b"Unknown endpoint in INTRODUCTION state")
         elif current_state == CHOICE:
-            
             if self.path == "/api/game_preamble":
                 # Transition to GAME_PREAMBLE
                 current_state = GAME_PREAMBLE
