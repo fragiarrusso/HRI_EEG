@@ -95,6 +95,12 @@
         submitButton.addEventListener('click', () => {
             if (name.trim() === '') {
                 emptyNameModal.style.display = 'flex';
+                fetch('/api/choice', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name }),
+            })
+
                 return;
             }
 

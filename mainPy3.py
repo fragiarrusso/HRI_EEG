@@ -1549,6 +1549,7 @@ class StateHandler(SimpleHTTPRequestHandler):
             if self.path == "/api/choice":
                 # Handle name submission
                 name = data.get("name")
+                print(name)
                 if not name:
                     self.send_response(400)
                     call_to_docker_server(current_state, 'say', "inserisci un nome valido")
@@ -1580,7 +1581,8 @@ class StateHandler(SimpleHTTPRequestHandler):
                     }).encode("utf-8"))
                 else:
                     # Existing user
-                    call_to_docker_server(current_state, 'say', f"Il nome {name} esiste già, conferma di essere tu")
+                    
+                    call_to_docker_server(current_state, 'say', "Il nome esiste gi, conferma di essere tu")
                     print(f"User {name} already exists. Awaiting confirmation.")
                     current_user = name  # Set current_user to handle name injection
                     welcome_message = ""  # Clear welcome message until confirmed
