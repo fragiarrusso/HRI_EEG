@@ -1433,6 +1433,7 @@ def attempt_connection():
 
 
 def call_to_docker_server(state, action, additional_data=None):
+    ''''
     url = "http://172.17.0.1:9001/act"
     payload = {"client":0, "state": state, "action": action, "additional_data": additional_data }
     try:
@@ -1443,7 +1444,9 @@ def call_to_docker_server(state, action, additional_data=None):
             print(f"Failed to notify external server: {response.status_code} - {response.text}")
     except Exception as e:
         print(f"Error during notification: {e}")    
-        
+    '''
+    print(state, action, additional_data)
+    return
 # HTTP request handler
 class StateHandler(SimpleHTTPRequestHandler):
     def do_GET(self):
@@ -1755,64 +1758,3 @@ def start_http_server():
 # Main entry point
 if __name__ == "__main__":
     start_http_server()
-
-
-'''
-serverpy2.py
-
-import BaseHTTPServer
-import json
-
-class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
-    def do_POST(self):
-        """Handle POST requests."""
-        if self.path == "/act":
-            content_length = int(self.headers.getheader('Content-Length'))
-            post_data = self.rfile.read(content_length)
-            try:
-                data = json.loads(post_data)
-                client = data.get("client")
-                state = data.get("state")
-                action = data.get("action")
-                additional_data = data.get("additional_data", {})
-
-                # Log received data
-                print("Received data from client:")
-                print(f"  Client: {client}")
-                print(f"  State: {state}")
-                print(f"  Action: {action}")
-                print(f"  Additional Data: {additional_data}")
-
-                # Respond with a success message
-                response = {
-                    "status": "success",
-                    "message": "Data received",
-                    "client": client,
-                    "state": state,
-                }
-                self.send_response(200)
-                self.send_header("Content-Type", "application/json")
-                self.end_headers()
-                self.wfile.write(json.dumps(response))
-            except Exception as e:
-                # Handle JSON parsing or other errors
-                self.send_response(400)
-                self.send_header("Content-Type", "text/plain")
-                self.end_headers()
-                self.wfile.write(f"Error processing request: {e}")
-        else:
-            self.send_response(404)
-            self.end_headers()
-            self.wfile.write("Endpoint not found")
-
-def run(server_class=BaseHTTPServer.HTTPServer, handler_class=RequestHandler, port=9001):
-    server_address = ('', port)
-    httpd = server_class(server_address, handler_class)
-    print(f"Python 2 HTTP server running on port {port}")
-    httpd.serve_forever()
-
-if __name__ == "__main__":
-    run()
-
-
-'''
