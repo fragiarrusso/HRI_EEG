@@ -26,7 +26,7 @@ class Robot():
 
         return session
 
-    def say(self, sentence, language = "English", speed = 1000, volume = 1.0):
+    def say(self, sentence, language = "English", speed = 200, volume = 1.0):
 
         self.tts_service.setLanguage(language)
         self.tts_service.setParameter("speed", speed)

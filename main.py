@@ -6,7 +6,7 @@ sys.path.append(os.getenv('PEPPER_TOOLS_HOME') + '/cmd_server')
 
 import pepper_cmd
 from pepper_cmd import *
-from robot_comunicator import *
+from robot import *
 from naoqi import ALProxy
 project_folder = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(project_folder)
