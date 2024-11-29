@@ -1,12 +1,12 @@
+
 const difficultySettings = {
-    1: { gameSpeed: 2, obstacleFrequency: 0.015, minObstacleGap: 350 },
-    2: { gameSpeed: 3, obstacleFrequency: 0.02, minObstacleGap: 300 },
-    3: { gameSpeed: 4, obstacleFrequency: 0.035, minObstacleGap: 240 },
-    4: { gameSpeed: 5, obstacleFrequency: 0.035, minObstacleGap: 210 },
-    5: { gameSpeed: 6, obstacleFrequency: 0.035, minObstacleGap: 180 },
-    6: { gameSpeed: 7, obstacleFrequency: 0.05, minObstacleGap: 150 },
-    7: { gameSpeed: 7, obstacleFrequency: 0.06, minObstacleGap: 120 },
+    1: { gameSpeed: 1.5, obstacleFrequency: 0.008, minObstacleGap: 2500 },  // Distanza tra ostacoli per livello 1
+    2: { gameSpeed: 2.5, obstacleFrequency: 0.008, minObstacleGap: 2500 },  // Distanza e frequenza uguali al livello 1
+    3: { gameSpeed: 3.5, obstacleFrequency: 0.008, minObstacleGap: 2500 },  // Frequenza invariata, distanza invariata
+    4: { gameSpeed: 4.5, obstacleFrequency: 0.008, minObstacleGap: 2500 },
+    5: { gameSpeed: 5.5, obstacleFrequency: 0.008, minObstacleGap: 2500 },
 };
+
 
 let currentDifficulty = 1; // Default to level 1
 let gameSpeed = difficultySettings[currentDifficulty].gameSpeed;
@@ -34,6 +34,33 @@ function startGracePeriod(duration) {
         gracePeriodActive = false;
     }, duration);
 }
+
+// Variabile che conterrà il valore di last_level
+let lastLevel = 1; // Impostato al livello 1 come valore di default
+
+// Funzione per caricare il livello dal server
+function loadLevelFromServer() {
+    fetch('/api/difficulty')
+        .then(response => response.json())
+        .then(data => {
+            lastLevel = data.difficulty;  // Assegna il valore di last_level
+            console.log("Last level fetched from server:", lastLevel);
+
+            // Ora aggiorna la difficoltà nel gioco basata su last_level
+            updateDifficulty(lastLevel);
+        })
+        .catch(err => console.error('Error fetching last level:', err));
+}
+
+// Chiamata per caricare il livello quando il gioco inizia
+
+print(lastLevel)
+loadLevelFromServer();
+
+print(lastLevel)
+
+// Il resto del codice del gioco rimane invariato
+
 
 // Update Difficulty
 function updateDifficulty(level, applyGrace = false) {
@@ -66,13 +93,13 @@ setInterval(() => {
 
 // Automatic Difficulty Increase
 setInterval(() => {
-    if (Date.now() - lastDifficultyChangeTime >= 45000) { // 45 seconds passed
+    if (Date.now() - lastDifficultyChangeTime >= 5000) { // 45 seconds passed
         if (currentDifficulty < 7) {
             updateDifficulty(currentDifficulty + 1, true); // Increment with grace period
         }
         lastDifficultyChangeTime = Date.now();
     }
-}, 1000); // Check every second
+}, 10000); // Check every second
 
 // Jump Logic
 function jump() {
@@ -164,13 +191,17 @@ function endGame() {
 }
 
 // Game Loop
+// Game Loop
 function gameLoop() {
+    if (gameOverModal.style.display === 'block') return; // Blocca il ciclo se il modale è attivo
     moveObstacles();
     requestAnimationFrame(gameLoop);
 }
 
+
 // Start Game
 document.addEventListener("keydown", (e) => {
+    if (gameOverModal.style.display === 'block') return;
     if (e.code === "Space") jump();
 });
 
