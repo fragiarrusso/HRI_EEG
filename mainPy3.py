@@ -311,6 +311,7 @@ class StateHandler(SimpleHTTPRequestHandler):
                 # Handle confirmation from existing users
                 name = data.get("name")
                 if not name:
+                    call_to_docker_server(current_state, 'say', "inserisci un nome valido")
                     self.send_response(400)
                     self.end_headers()
                     self.wfile.write(b"Name is required")
@@ -343,6 +344,7 @@ class StateHandler(SimpleHTTPRequestHandler):
                 # Transition to GAME_PREAMBLE
                 current_state = GAME_PREAMBLE
                 print("Transitioned to GAME_PREAMBLE.")
+                call_to_docker_server(current_state, 'say', "Benvenuto in game preamble")
                 self.send_response(200)
                 self.end_headers()
                 self.wfile.write(json.dumps({
@@ -352,6 +354,7 @@ class StateHandler(SimpleHTTPRequestHandler):
                 # Transition to EXERCISES_PREAMBLE
                 current_state = EXERCISES_PREAMBLE
                 print("Transitioned to EXERCISES_PREAMBLE.")
+                call_to_docker_server(current_state, 'say', "Benvenuto in exercise preamble")
                 self.send_response(200)
                 self.end_headers()
                 self.wfile.write(json.dumps({
@@ -362,6 +365,7 @@ class StateHandler(SimpleHTTPRequestHandler):
                 global client_socket, connection_status
                 current_state = INTRODUCTION
                 current_user = None
+                
                 # Close the connection to the second server
                 if client_socket:
                     try:
@@ -373,6 +377,7 @@ class StateHandler(SimpleHTTPRequestHandler):
                         client_socket = None
                         with connection_lock:
                             connection_status = "disconnected"
+                call_to_docker_server(current_state, 'say', "inserisci un nome valido")
                 print("Returned to INTRODUCTION.")
                 self.send_response(200)
                 self.end_headers()
@@ -388,6 +393,7 @@ class StateHandler(SimpleHTTPRequestHandler):
             if self.path == "/api/game":
                 # Transition to GAME
                 current_state = GAME
+                call_to_docker_server(current_state, 'say', "Inizia a giocare!")
                 print("Transitioned to GAME.")
                 self.send_response(200)
                 self.end_headers()
@@ -399,6 +405,7 @@ class StateHandler(SimpleHTTPRequestHandler):
                 current_state = CHOICE
                 welcome_message = f"Ciao, {current_user}"
                 print("Returned to CHOICE.")
+                call_to_docker_server(current_state, 'say', "Non ti va piu di giocare?")
                 self.send_response(200)
                 self.end_headers()
                 self.wfile.write(json.dumps({
@@ -426,6 +433,7 @@ class StateHandler(SimpleHTTPRequestHandler):
             if self.path == "/api/exercise":
                 # Transition to EXERCISE
                 current_state = EXERCISES
+                call_to_docker_server(current_state, 'say', "Alleniamoci!")
                 print("Transitioned to EXERCISES.")
                 self.send_response(200)
                 self.end_headers()
@@ -443,6 +451,7 @@ class StateHandler(SimpleHTTPRequestHandler):
                 # Return to CHOICE
                 current_state = CHOICE
                 welcome_message = f"Ciao, {current_user}"
+                call_to_docker_server(current_state, 'say', "Non vuoi piu allenarti?")
                 print("Returned to CHOICE.")
                 self.send_response(200)
                 self.end_headers()
@@ -467,12 +476,13 @@ class StateHandler(SimpleHTTPRequestHandler):
                 self.wfile.write(b"Unknown endpoint in EXERCISES_PREAMBLE state")
 
 
-
+        # probabilmente da togliere tutto
         elif current_state == EXERCISES:
             # Handle POST requests in GAME state if needed
             if self.path == "/api/exercise_preamble":
                 current_state = EXERCISES_PREAMBLE
                 print("Transitioned to EXERCISES PREAMBLE.")
+                call_to_docker_server(current_state, 'say', "Sei stanco?")
                 self.send_response(200)
                 self.end_headers()
                 self.wfile.write(json.dumps({
@@ -484,6 +494,7 @@ class StateHandler(SimpleHTTPRequestHandler):
             # Handle POST requests in GAME state if needed
             if self.path == "/api/gamepreamble":
                 current_state = GAME_PREAMBLE
+                call_to_docker_server(current_state, 'say', "Non vuoi piu giocare?")
                 print("Transitioned to GAME PREAMBLE.")
                 self.send_response(200)
                 self.end_headers()
