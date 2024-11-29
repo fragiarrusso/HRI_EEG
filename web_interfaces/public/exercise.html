@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown Timer</title>
+</head>
+<body>
+    <h1>Countdown Timer</h1>
+    <div id="timer">10</div> <!-- Initial countdown time in seconds -->
+    <div id="reps" style="display: none;">Repetitions: <span id="repCount">5</span></div> <!-- Initial repetitions -->
+    
+    <script>
+        let countdownTime = 10; // Countdown time in seconds
+        let repetitions = 5; // Number of repetitions
+        let isCountingDown = true;
+
+        const timerElement = document.getElementById('timer');
+        const repsElement = document.getElementById('reps');
+        const repCountElement = document.getElementById('repCount');
+
+        const countdown = setInterval(() => {
+            if (isCountingDown) {
+                if (countdownTime > 0) {
+                    timerElement.textContent = countdownTime;
+                    countdownTime--;
+                } else {
+                    isCountingDown = false;
+                    timerElement.style.display = 'none';
+                    repsElement.style.display = 'block';
+                    startRepetitions();
+                }
+            }
+        }, 1000);
+
+        function startRepetitions() {
+            const repInterval = setInterval(() => {
+                if (repetitions > 0) {
+                    repCountElement.textContent = repetitions;
+                    repetitions--;
+                } else {
+                    clearInterval(repInterval);
+                    repCountElement.textContent = "Done!";
+                }
+            }, 2000); // Change this value to set the interval for repetitions (in milliseconds)
+        }
+    </script>
+</body>
+</html>

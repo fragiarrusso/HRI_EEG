@@ -1,4 +1,4 @@
-import BaseHTTPServer
+import BaseHTTPServer # type: ignore
 import json
 from robot import Robot
 

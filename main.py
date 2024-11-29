@@ -1,22 +1,11 @@
 
 from robot_comunicator import RobotCommunicator
-from robot import *
 
 #change according to the port that Choreographe opens
 
 
 robotcommunicator = RobotCommunicator()
 
-
-
-while True:
-    action = robotcommunicator.read_Message_Socket()
-    print(action)
-
-
-robot.say('Bye')
-
-#motion.moveTo(0.5, 0, 0)  # Move forward 0.5 meters
 
 '''
 
