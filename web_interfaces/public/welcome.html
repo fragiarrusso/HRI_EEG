@@ -157,14 +157,12 @@
 
         // Left button action: Notify the server about DOING_EXERCISES
         document.getElementById('leftButton').addEventListener('click', () => {
-            fetch('/api/exercise', {
+            fetch('/api/exercise_preamble', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
             })
-                .then((response) => response.json())
-                .then((data) => {
-                    console.log(data.message);
-                    // Handle exercise logic or stay on the same page
+                .then(() => {
+                    window.location.href = '/exercise_preamble.html';
                 })
                 .catch((error) => console.error('Error:', error));
         });

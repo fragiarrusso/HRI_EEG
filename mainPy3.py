@@ -1308,7 +1308,8 @@ import requests
 INITIAL_STATE = "INITIAL_STATE"
 INTRODUCTION = "INTRODUCTION"
 CHOICE = "CHOICE"
-DOING_EXERCISES = "DOING_EXERCISES"
+EXERCISES = "EXERCISES"
+EXERCISES_PREAMBLE = "EXERCISES_PREAMBLE"
 GAME_PREAMBLE = "GAME_PREAMBLE"
 GAME = "GAME"
 
@@ -1505,6 +1506,10 @@ class StateHandler(SimpleHTTPRequestHandler):
                 self.path = "/game_preamble.html"
             elif current_state == GAME:
                 self.path = "/game.html"
+            elif current_state == EXERCISES_PREAMBLE:
+                self.path = "/exercise_preamble.html"
+            elif current_state == EXERCISES:
+                self.path = "/exercise.html"
             else:
                 self.path = "/index.html"
 
@@ -1636,14 +1641,14 @@ class StateHandler(SimpleHTTPRequestHandler):
                 self.wfile.write(json.dumps({
                     "message": "Transitioned to GAME_PREAMBLE"
                 }).encode('utf-8'))
-            elif self.path == "/api/exercise":
-                # Transition to DOING_EXERCISES
-                current_state = DOING_EXERCISES
-                print("Transitioned to DOING_EXERCISES.")
+            elif self.path == "/api/exercise_preamble":
+                # Transition to EXERCISES_PREAMBLE
+                current_state = EXERCISES_PREAMBLE
+                print("Transitioned to EXERCISES_PREAMBLE.")
                 self.send_response(200)
                 self.end_headers()
                 self.wfile.write(json.dumps({
-                    "message": "Transitioned to DOING_EXERCISES"
+                    "message": "Transitioned to EXERCISES_PREAMBLE"
                 }).encode('utf-8'))
             elif self.path == "/api/introduction": 
                 # Return to INTRODUCTION
@@ -1709,13 +1714,56 @@ class StateHandler(SimpleHTTPRequestHandler):
                 self.end_headers()
                 self.wfile.write(b"Unknown endpoint in GAME_PREAMBLE state")   
                 
-        elif current_state == DOING_EXERCISES:
-            # Handle POST requests in DOING_EXERCISES state if needed
-            self.send_response(404)
-            self.end_headers()
-            self.wfile.write(b"No endpoints defined in DOING_EXERCISES state")
+        elif current_state == EXERCISES_PREAMBLE:
+            # Handle POST requests in EXERCISES_PREAMBLE state if needed
+            if self.path == "/api/exercise":
+                # Transition to EXERCISE
+                current_state = EXERCISES
+                print("Transitioned to EXERCISES.")
+                self.send_response(200)
+                self.end_headers()
+                self.wfile.write(json.dumps({
+                    "message": "Transitioned to EXERCISES"
+                }).encode('utf-8'))
+            elif self.path == "/api/choice":
+                # Return to CHOICE
+                current_state = CHOICE
+                welcome_message = f"Ciao, {current_user}"
+                print("Returned to CHOICE.")
+                self.send_response(200)
+                self.end_headers()
+                self.wfile.write(json.dumps({
+                    "message": "Transitioned to CHOICE"
+                }).encode('utf-8'))
+            elif self.path == "/api/rolling_averages":
+                # Return rolling averages
+                with connection_lock:
+                    workload = rolling_avg_workload
+                    stress = rolling_avg_stress
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps({
+                    "rolling_avg_workload": workload,
+                    "rolling_avg_stress": stress
+                }).encode('utf-8'))
+            else:
+                self.send_response(404)
+                self.end_headers()
+                self.wfile.write(b"Unknown endpoint in EXERCISES_PREAMBLE state") 
 
 
+
+        elif current_state == EXERCISES:
+            # Handle POST requests in GAME state if needed
+            if self.path == "/api/exercise_preamble":
+                current_state = EXERCISES_PREAMBLE
+                print("Transitioned to EXERCISES PREAMBLE.")
+                self.send_response(404)
+                self.end_headers()
+                self.wfile.write(json.dumps({
+                    "message": "Transitioned to EXERCISES PREAMBLE"
+                }).encode('utf-8'))
 
         elif current_state == GAME:
             # Handle POST requests in GAME state if needed

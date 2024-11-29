@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Countdown Timer</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <h1>Countdown Timer</h1>
@@ -41,6 +42,8 @@
                 } else {
                     clearInterval(repInterval);
                     repCountElement.textContent = "Done!";
+
+                    
                 }
             }, 2000); // Change this value to set the interval for repetitions (in milliseconds)
         }
