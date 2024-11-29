@@ -47,10 +47,11 @@ def recordAudio(max_duration, filename="./media/file_output.wav"):
         frames.append(data)
 
         # Comment this line if used on linux
+        '''
         if keyboard.is_pressed('q'):  # Controlla se il tasto 'q' è stato premuto
             print("Registrazione interrotta")
             break
-
+        '''
     print("finished recording")
 
     # Stop registrazione
@@ -82,7 +83,12 @@ def speech_to_text(audio_path):
     transcription = processor_stt.decode(predicted_ids[0])
     return transcription
 
+def get_response(duration=10):
+    recordAudio(duration, filename="./media/test.wav")
+    response=speech_to_text("./media/test.wav")
+    return response
+
 if __name__ == '__main__':
     recordAudio(10, filename="./media/test.wav")
-    response=speech_to_text("./media/hand_shaking.wav")
+    response=speech_to_text("./media/test.wav")
     print(f'transcription_hand_shake: {response}')
