@@ -1,4 +1,251 @@
+const difficultySettings = {
+    1: { gameSpeed: 1.5, obstacleFrequency: 0.00, minObstacleGap: 2500 },  // Distanza tra ostacoli per livello 1
+    2: { gameSpeed: 2.5, obstacleFrequency: 0.00, minObstacleGap: 2500 },  // Distanza e frequenza uguali al livello 1
+    3: { gameSpeed: 3.5, obstacleFrequency: 0.00, minObstacleGap: 2500 },  // Frequenza invariata, distanza invariata
+    4: { gameSpeed: 4.5, obstacleFrequency: 0.00, minObstacleGap: 2500 },
+    5: { gameSpeed: 5.5, obstacleFrequency: 0.00, minObstacleGap: 2500 },
+};
 
+let currentDifficulty = 1; // Default to level 1
+let gameSpeed = difficultySettings[currentDifficulty].gameSpeed;
+let obstacleFrequency = difficultySettings[currentDifficulty].obstacleFrequency;
+let minObstacleGap = difficultySettings[currentDifficulty].minObstacleGap;
+
+
+const gameContainer = document.getElementById("gameContainer");
+const player = document.getElementById("player");
+const scoreDisplay = document.getElementById("score");
+const difficultyDisplay = document.getElementById("difficulty");
+const gameOverModal = document.getElementById("gameOverModal");
+
+let obstacles = [];
+let isJumping = false;
+let jumpHeight = 0;
+let score = 0;
+let gracePeriodActive = false;
+let lastObstacleSpawnTime = Date.now();
+let lastDifficultyChangeTime = Date.now();
+
+// Grace Period Timer
+function startGracePeriod(duration) {
+    gracePeriodActive = true;
+    setTimeout(() => {
+        gracePeriodActive = false;
+    }, duration);
+}
+
+// Fetch rolling averages if connected
+// Variabili globali per salvare i valori di workload e stress
+let savedWorkload = 0;
+let savedStress = 0;
+
+function wait(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+
+async function updateDifficulty(level, applyGrace = false) {
+    try {
+        // Fetch rolling averages if connected
+        const response = await fetch('/api/rolling_averages');
+        const data = await response.json();  // Parsing la risposta come JSON
+
+        let workload = data.rolling_avg_workload;  // Estrai il valore di "rolling_avg_workload"
+        let stress = data.rolling_avg_stress;  // Estrai il valore di "rolling_avg_stress"
+
+        // Converti i valori a numeri
+        workload = parseFloat(workload);  // Converte il valore di workload in un numero
+        stress = parseFloat(stress);  // Converte il valore di stress in un numero
+
+        // Salva i valori nelle variabili globali
+        savedWorkload = workload;
+        savedStress = stress;
+
+        // Ora puoi utilizzare `savedWorkload` e `savedStress` nel resto del codice
+        console.log("Saved Workload:", savedWorkload);
+        console.log("Saved Stress:", savedStress);
+
+        // Aspetta un secondo prima di proseguire
+        await wait(1000);  // Attende 1000 millisecondi (1 secondo)
+
+        // Ora puoi usare i valori appena ottenuti
+        workload_stress = parseFloat(savedStress + savedWorkload);  // Quando arriva qui, usa il valore appena ricevuto da fetch
+        if (workload_stress>1) {
+        
+
+        if (workload_stress > 3.5) {   // se stressato tanto diminuisce di 1
+            current_level = level - 2;
+            if (current_level<1) {
+                current_level=1
+            }}
+
+        else if (workload_stress <3) {
+            current_level = level;
+            if (current_level>5) {
+                current_level=5
+            }
+        } 
+
+        else {
+            current_level=level-1;
+        }
+
+        const settings = difficultySettings[current_level];
+        gameSpeed = settings.gameSpeed;
+        obstacleFrequency = settings.obstacleFrequency;
+        minObstacleGap = settings.minObstacleGap;
+        currentDifficulty = current_level;
+        difficultyDisplay.innerText = `Difficulty Level: ${current_level}`;
+        console.log(`Updated to difficulty level ${current_level}`);
+
+        if (applyGrace) {
+            startGracePeriod(200); // Apply grace period for difficulty increase
+        }}
+    else {
+        currentDifficulty=level
+        if (currentDifficulty > 5){
+            currentDifficulty=5
+        }
+        const settings = difficultySettings[currentDifficulty];
+        gameSpeed = settings.gameSpeed;
+        obstacleFrequency = settings.obstacleFrequency;
+        minObstacleGap = settings.minObstacleGap;
+        difficultyDisplay.innerText = `Difficulty Level: ${currentDifficulty}`;
+        console.log(`Updated to difficulty level ${currentDifficulty}`);
+    
+        if (applyGrace) {
+            startGracePeriod(200); // Apply grace period for difficulty increase
+        }}
+    } catch (error) {
+        
+    }  // Gestione degli errori in caso di problemi con la richiesta fetch
+}
+
+
+
+
+setInterval(() => {
+    if (Date.now() - lastDifficultyChangeTime >= 5000) { // 45 seconds passed
+        if (currentDifficulty < 7) {
+            updateDifficulty(currentDifficulty + 1, true); // Increment with grace period
+        }
+        lastDifficultyChangeTime = Date.now();
+    }
+}, 5000); // Check every second
+
+// Jump Logic
+function jump() {
+    if (isJumping) return;
+    isJumping = true;
+
+    let jumpInterval = setInterval(() => {
+        if (jumpHeight >= 120) { // Increased jump height
+            clearInterval(jumpInterval);
+            let fallInterval = setInterval(() => {
+                if (jumpHeight <= 0) {
+                    clearInterval(fallInterval);
+                    isJumping = false;
+                }
+                jumpHeight -= 5;
+                player.style.bottom = jumpHeight + "px";
+            }, 20);
+        }
+        jumpHeight += 5;
+        player.style.bottom = jumpHeight + "px";
+    }, 20);
+}
+
+// Spawn Obstacles with Proper Spacing
+function spawnObstacle() {
+    if (gracePeriodActive) return; // Do not spawn obstacles during grace periods
+
+    // Ensure proper spacing between obstacles
+    const lastObstacle = obstacles[obstacles.length - 1];
+    const currentTime = Date.now();
+
+    // Adjusted condition to avoid overly tight gaps
+    if (lastObstacle && currentTime - lastObstacleSpawnTime < minObstacleGap) return;
+
+    // Create and spawn a new obstacle
+    const obstacle = document.createElement("div");
+    obstacle.classList.add("obstacle");
+    obstacle.style.right = "0px";
+    gameContainer.appendChild(obstacle);
+    obstacles.push(obstacle);
+    lastObstacleSpawnTime = currentTime; // Update last spawn time
+}
+
+// Move Obstacles and Check Collisions
+function moveObstacles() {
+    obstacles.forEach((obstacle, index) => {
+        let obstacleRight = parseInt(window.getComputedStyle(obstacle).right);
+        obstacle.style.right = obstacleRight + gameSpeed + "px";
+
+        let obstacleRect = obstacle.getBoundingClientRect();
+        let playerRect = player.getBoundingClientRect();
+
+        if (
+            playerRect.left < obstacleRect.right &&
+            playerRect.right > obstacleRect.left &&
+            playerRect.bottom > obstacleRect.top
+        ) {
+            endGame();
+        }
+
+        if (obstacleRight > gameContainer.offsetWidth) {
+            obstacles.shift();
+            obstacle.remove();
+            score++;
+            scoreDisplay.innerText = `Score: ${score}`;
+        }
+    });
+
+    if (Math.random() < obstacleFrequency) spawnObstacle();
+}
+
+// End Game and Reset
+function endGame() {
+    // 1. Show the modal with the score
+    gameOverModal.style.display = 'block';
+    gameOverModal.querySelector('p').innerText = `Game Over :) Your score: ${score}`;
+
+    // 2. Stop the game (so it doesn't continue)
+    obstacles.forEach(obstacle => obstacle.remove());
+    obstacles = [];
+    score = 0;
+    isJumping = false;
+
+    // 3. Reset difficulty (back to level 1)
+    updateDifficulty(1);
+
+    // 4. Activate a grace period of 2 seconds
+    startGracePeriod(2000);
+}
+
+// Game Loop
+// Game Loop
+function gameLoop() {
+    if (gameOverModal.style.display === 'block') return; // Blocca il ciclo se il modale è attivo
+    moveObstacles();
+    requestAnimationFrame(gameLoop);
+}
+
+
+// Start Game
+document.addEventListener("keydown", (e) => {
+    if (gameOverModal.style.display === 'block') return;
+    if (e.code === "Space") jump();
+});
+
+
+
+
+
+
+startGracePeriod(100); // Initial grace period
+gameLoop();
+
+/*
 const difficultySettings = {
     1: { gameSpeed: 1.5, obstacleFrequency: 0.008, minObstacleGap: 2500 },  // Distanza tra ostacoli per livello 1
     2: { gameSpeed: 2.5, obstacleFrequency: 0.008, minObstacleGap: 2500 },  // Distanza e frequenza uguali al livello 1
@@ -12,6 +259,7 @@ let currentDifficulty = 1; // Default to level 1
 let gameSpeed = difficultySettings[currentDifficulty].gameSpeed;
 let obstacleFrequency = difficultySettings[currentDifficulty].obstacleFrequency;
 let minObstacleGap = difficultySettings[currentDifficulty].minObstacleGap;
+let connected = false
 
 const gameContainer = document.getElementById("gameContainer");
 const player = document.getElementById("player");
@@ -186,6 +434,25 @@ document.addEventListener("keydown", (e) => {
 
 startGracePeriod(100); // Initial grace period
 gameLoop();
+
+
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

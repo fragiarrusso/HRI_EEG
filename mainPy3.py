@@ -40,6 +40,7 @@ connection_thread = None
 rolling_avg_workload = None
 rolling_avg_stress = None
 
+
 # Load and save users
 def load_users():
     if not os.path.exists(USERS_FILE):
@@ -115,6 +116,9 @@ def listen_to_second_server():
                 client_socket.close()
                 client_socket = None
             connection_status = "disconnected"
+            rolling_avg_workload=None
+            rolling_avg_stress=None
+
         attempt_connection()
 
 def attempt_connection():
@@ -501,6 +505,20 @@ class StateHandler(SimpleHTTPRequestHandler):
                 self.wfile.write(json.dumps({
                     "message": "Transitioned to GAME PREAMBLE"
                 }).encode('utf-8'))
+            elif self.path == "/api/rolling_averages":
+                # Return rolling averages
+                with connection_lock:
+                    workload = rolling_avg_workload
+                    stress = rolling_avg_stress
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps({
+                    "rolling_avg_workload": workload,
+                    "rolling_avg_stress": stress
+                }).encode('utf-8'))
+                
+
                 
         else:
             self.send_response(404)
