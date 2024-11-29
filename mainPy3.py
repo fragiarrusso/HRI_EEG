@@ -432,6 +432,13 @@ class StateHandler(SimpleHTTPRequestHandler):
                 self.wfile.write(json.dumps({
                     "message": "Transitioned to EXERCISES"
                 }).encode('utf-8'))
+                while True:
+                    print('nel while')
+                    response = get_response()
+                    if response == 'stop' or response == 'ferma':
+                        current_state = CHOICE
+                        print('stopped')
+                        break
             elif self.path == "/api/choice":
                 # Return to CHOICE
                 current_state = CHOICE
@@ -457,7 +464,7 @@ class StateHandler(SimpleHTTPRequestHandler):
             else:
                 self.send_response(404)
                 self.end_headers()
-                self.wfile.write(b"Unknown endpoint in EXERCISES_PREAMBLE state") 
+                self.wfile.write(b"Unknown endpoint in EXERCISES_PREAMBLE state")
 
 
 
@@ -471,12 +478,7 @@ class StateHandler(SimpleHTTPRequestHandler):
                 self.wfile.write(json.dumps({
                     "message": "Transitioned to EXERCISES PREAMBLE"
                 }).encode('utf-8'))
-            while True:
-                response = get_response()
-                if response == 'stop' or response == 'ferma':
-                    current_state = CHOICE
-                    print('stopped')
-                    break
+
 
         elif current_state == GAME:
             # Handle POST requests in GAME state if needed
