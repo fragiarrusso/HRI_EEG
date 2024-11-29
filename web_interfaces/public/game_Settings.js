@@ -35,29 +35,8 @@ function startGracePeriod(duration) {
     }, duration);
 }
 
-// Variabile che conterrà il valore di last_level
-let lastLevel = 1; // Impostato al livello 1 come valore di default
 
-// Funzione per caricare il livello dal server
-function loadLevelFromServer() {
-    fetch('/api/difficulty')
-        .then(response => response.json())
-        .then(data => {
-            lastLevel = data.difficulty;  // Assegna il valore di last_level
-            console.log("Last level fetched from server:", lastLevel);
 
-            // Ora aggiorna la difficoltà nel gioco basata su last_level
-            updateDifficulty(lastLevel);
-        })
-        .catch(err => console.error('Error fetching last level:', err));
-}
-
-// Chiamata per caricare il livello quando il gioco inizia
-
-print(lastLevel)
-loadLevelFromServer();
-
-print(lastLevel)
 
 // Il resto del codice del gioco rimane invariato
 
