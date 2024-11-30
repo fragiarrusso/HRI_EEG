@@ -416,7 +416,7 @@
     <div id="buttonContainer" class="button-container">
         <button id="playButton">Gioca</button>
         <button id="rulesButton">Regole</button>
-        <button id="leaderboardButton">Classifica</button>
+        <button id="logoutButton">Logout</button>
     </div>
 
     <script>
@@ -551,9 +551,17 @@
         });
 
         // Leaderboard button action
-        document.getElementById('leaderboardButton').addEventListener('click', () => {
-            window.location.href = '/classifica.html'; 
+        document.getElementById('logoutButton').addEventListener('click', () => {
+            fetch('/api/introduction', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+            })
+                .then(() => {
+                    window.location.href = '/index.html';
+                })
+                .catch((error) => console.error('Error:', error));
         });
+        ;
 
         // Back button action
         document.getElementById('arrowButton').addEventListener('click', () => {

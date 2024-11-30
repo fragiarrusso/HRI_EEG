@@ -272,7 +272,7 @@ button:active {
 }
 
 /* Stile per i pulsanti */
-#playButton, #rulesButton, #leaderboardButton {
+#playButton, #rulesButton{
     width: 300px; /* Imposta una larghezza fissa per i pulsanti */
     height: 80px; /* Imposta un'altezza fissa per i pulsanti */
     margin: 40px; /* Spazio tra i pulsanti */
@@ -289,12 +289,35 @@ button:active {
     align-items: center; /* Centra il testo verticalmente */
 }
 
-
-
 /* Cambia colore dei pulsanti al passaggio del mouse */
-#playButton:hover, #rulesButton:hover, #leaderboardButton:hover {
+#playButton:hover, #rulesButton:hover {
     background-color: #45a049;
 }
+
+#logoutButton {
+    width: 300px; /* Imposta una larghezza fissa per i pulsanti */
+    height: 80px; /* Imposta un'altezza fissa per i pulsanti */
+    margin: 40px; /* Spazio tra i pulsanti */
+    font-size: 35px; /* Dimensione del testo */
+    background-color: red; /* Colore di sfondo dei pulsanti */
+    color: white; /* Colore del testo */
+    border: none; /* Rimuove il bordo */
+    border-radius: 5px; /* Angoli arrotondati */
+    cursor: pointer; /* Mostra il cursore a mano */
+    transition: background-color 0.3s ease; /* Effetto transizione sul colore di sfondo */
+    
+    display: flex; /* Utilizza il modello di layout flexbox */
+    justify-content: center; /* Centra il testo orizzontalmente */
+    align-items: center; /* Centra il testo verticalmente */
+}
+
+#logoutButton:hover {
+    background-color: red;
+}
+
+
+
+
 
 
 
@@ -314,6 +337,9 @@ button:active {
 .backButton:hover {
     background-color: #007BFF;
 }
+
+
+
 
 /* Stile per il pulsante Indietro */
 #arrowButton {

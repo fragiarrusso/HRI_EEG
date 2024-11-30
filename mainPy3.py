@@ -5,7 +5,7 @@ import socket
 import threading
 from http.server import SimpleHTTPRequestHandler, HTTPServer
 from collections import deque
-from audio import get_response
+#from audio import get_response
 import requests
 
 # Define states
@@ -427,6 +427,30 @@ class StateHandler(SimpleHTTPRequestHandler):
                     "rolling_avg_workload": workload,
                     "rolling_avg_stress": stress
                 }).encode('utf-8'))
+            elif self.path == "/api/introduction": 
+                # Return to INTRODUCTION
+                #global client_socket, connection_status
+                current_state = INTRODUCTION
+                current_user = None
+                
+                # Close the connection to the second server
+                if client_socket:
+                    try:
+                        client_socket.close()
+                        print("Closed connection to the second server.")
+                    except Exception as e:
+                        print(f"Error closing connection: {e}")
+                    finally:
+                        client_socket = None
+                        with connection_lock:
+                            connection_status = "disconnected"
+                call_to_docker_server(current_state, 'say', "Hai effettuato il logout, inserisci un nome valido")
+                print("Returned to INTRODUCTION.")
+                self.send_response(200)
+                self.end_headers()
+                self.wfile.write(json.dumps({
+                    "message": "Transitioned to INTRODUCTION"
+                }).encode('utf-8'))
             else:
                 self.send_response(404)
                 self.end_headers()
@@ -473,6 +497,30 @@ class StateHandler(SimpleHTTPRequestHandler):
                 self.wfile.write(json.dumps({
                     "rolling_avg_workload": workload,
                     "rolling_avg_stress": stress
+                }).encode('utf-8'))
+            elif self.path == "/api/introduction": 
+                # Return to INTRODUCTION
+                #global client_socket, connection_status
+                current_state = INTRODUCTION
+                current_user = None
+                
+                # Close the connection to the second server
+                if client_socket:
+                    try:
+                        client_socket.close()
+                        print("Closed connection to the second server.")
+                    except Exception as e:
+                        print(f"Error closing connection: {e}")
+                    finally:
+                        client_socket = None
+                        with connection_lock:
+                            connection_status = "disconnected"
+                call_to_docker_server(current_state, 'say', "Hai effettuato il logout, inserisci un nome valido")
+                print("Returned to INTRODUCTION.")
+                self.send_response(200)
+                self.end_headers()
+                self.wfile.write(json.dumps({
+                    "message": "Transitioned to INTRODUCTION"
                 }).encode('utf-8'))
             else:
                 self.send_response(404)
