@@ -12,7 +12,7 @@ sys.path.append(project_folder)
 
 FORMAT = pyaudio.paInt16  # Formato dei dati audio
 CHANNELS = 2
-RATE = 44100  # Frequenza di campionamento
+RATE = 16000  # Frequenza di campionamento
 CHUNK = 1024  # Frames per buffer
 RECORD_SECONDS = 5  # Durata della registrazione
 WAVE_OUTPUT_FILENAME = "file_output.wav"
@@ -83,12 +83,11 @@ def speech_to_text(audio_path):
     transcription = processor_stt.decode(predicted_ids[0])
     return transcription
 
-def get_response(duration=10):
+def get_response(duration=3):
     recordAudio(duration, filename="./media/test.wav")
     response=speech_to_text("./media/test.wav")
     return response
 
 if __name__ == '__main__':
-    recordAudio(10, filename="./media/test.wav")
-    response=speech_to_text("./media/test.wav")
+    response=get_response()
     print(f'transcription_hand_shake: {response}')

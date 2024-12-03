@@ -5,7 +5,7 @@ import socket
 import threading
 from http.server import SimpleHTTPRequestHandler, HTTPServer
 from collections import deque
-#from audio import get_response
+from audio import get_response
 import requests
 
 # Define states
@@ -24,7 +24,7 @@ workload_values = deque(maxlen=ROLLING_WINDOW_SIZE)
 stress_values = deque(maxlen=ROLLING_WINDOW_SIZE)
 
 # Globals
-ACTIVE = False
+ACTIVE = True
 current_state = INITIAL_STATE
 current_user = None
 welcome_message = ""
@@ -463,6 +463,7 @@ class StateHandler(SimpleHTTPRequestHandler):
                 current_state = EXERCISES
                 call_to_docker_server(current_state, 'say', "Alleniamoci!")
                 print("Transitioned to EXERCISES.")
+                call_to_docker_server(current_state, 'move', "bigcircle;0.5")
                 self.send_response(200)
                 self.end_headers()
                 self.wfile.write(json.dumps({
@@ -534,7 +535,6 @@ class StateHandler(SimpleHTTPRequestHandler):
             if self.path == "/api/exercise_preamble":
                 current_state = EXERCISES_PREAMBLE
                 print("Transitioned to EXERCISES PREAMBLE.")
-                call_to_docker_server(current_state, 'say', "Sei stanco?")
                 self.send_response(200)
                 self.end_headers()
                 self.wfile.write(json.dumps({

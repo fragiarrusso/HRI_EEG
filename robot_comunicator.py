@@ -15,7 +15,13 @@ class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
                 client = str(data.get("client"))
                 state = str(data.get("state"))
                 action = str(data.get("action"))
-                additional_data = str(data.get("additional_data", {}))
+                additional_data = str(data.get("additional_data"))
+                additional_data_array = additional_data.split(';')
+                data1 = additional_data_array[0]
+                if len(additional_data_array) > 1:
+                    data2 = float(additional_data_array[1])
+                
+                #speed = int(data.get('speed'))
 
                 # Log received data
                 print("Received data from client:")
@@ -23,15 +29,14 @@ class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
                 print("  State: "+state)
                 print("  Action: "+ action)
                 print("  Additional Data: " + additional_data)
-                print(action == 'say')
-                
+
                 if action == 'say':
-                    robot.say(additional_data)
+                    robot.say(data1)
                 elif action == 'move':
-                    if additional_data == 'bigcircle':
-                        robot.bigcircle(action[2])
-                    elif additional_data == 'push':
-                        robot.pushout(action[2])
+                    if data1 == 'bigcircle':
+                        robot.bigcircle(data2)
+                    elif data1 == 'push':
+                        robot.pushout(data2)
 
                 # Respond with a success message
                 response = {
@@ -59,7 +64,7 @@ class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
 def RobotCommunicator(server_class=BaseHTTPServer.HTTPServer, handler_class=RequestHandler, port=9001):
     global robot
-    robot = Robot(44821)
+    robot = Robot(45495)
     server_address = ('172.17.0.1', port)
     httpd = server_class(server_address, handler_class)
     print("Python 2 HTTP server running on port "+str(port))
