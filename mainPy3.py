@@ -463,19 +463,46 @@ class StateHandler(SimpleHTTPRequestHandler):
                 current_state = EXERCISES
                 call_to_docker_server(current_state, 'say', "Alleniamoci!")
                 print("Transitioned to EXERCISES.")
-                call_to_docker_server(current_state, 'move', "bigcircle;0.5")
+                for _ in range(8):
+                    call_to_docker_server(current_state, 'move', "bigcircle;0.5")
                 self.send_response(200)
                 self.end_headers()
                 self.wfile.write(json.dumps({
                     "message": "Transitioned to EXERCISES"
                 }).encode('utf-8'))
+                #audio_thread = threading.Thread(target=attempt_connection, daemon=True)
                 while True:
                     print('nel while')
                     response = get_response()
-                    if response == 'stop' or response == 'ferma':
+                    print('response: '+response)
+                    if 'STOP' in response or 'FERMA' in response:
                         current_state = CHOICE
                         print('stopped')
                         break
+            elif self.path == "/api/rolling_averages":
+                # Return rolling averages
+                with connection_lock:
+                    workload = rolling_avg_workload
+                    stress = rolling_avg_stress
+                    self.send_response(200)
+                    self.send_header("Content-Type", "application/json")
+                    self.end_headers()
+                    self.wfile.write(json.dumps({
+                        "rolling_avg_workload": workload,
+                        "rolling_avg_stress": stress
+                    }).encode('utf-8'))
+
+                    self.send_response(200)
+                    self.end_headers()
+                    self.wfile.write(json.dumps({
+                        "message": "Transitioned to EXERCISES"
+                    }).encode('utf-8'))
+                    i = 0
+                    while i < 10:
+                        call_to_docker_server(current_state, 'move', "bigcircle;"+str(0.5*(1/workload)))
+                        if stress > 1.6 and i > 6:
+                            break
+            
             elif self.path == "/api/choice":
                 # Return to CHOICE
                 current_state = CHOICE

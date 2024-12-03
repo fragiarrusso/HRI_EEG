@@ -1,14 +1,10 @@
 import pyaudio
 import wave
-import keyboard
 import os
 import sys
 from transformers import Wav2Vec2ForCTC, Wav2Vec2Processor
 import torch
 import librosa
-
-project_folder = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.append(project_folder)
 
 FORMAT = pyaudio.paInt16  # Formato dei dati audio
 CHANNELS = 2
@@ -45,13 +41,6 @@ def recordAudio(max_duration, filename="./media/file_output.wav"):
     for i in range(0, int(RATE / CHUNK * max_duration)):
         data = stream.read(CHUNK)
         frames.append(data)
-
-        # Comment this line if used on linux
-        '''
-        if keyboard.is_pressed('q'):  # Controlla se il tasto 'q' è stato premuto
-            print("Registrazione interrotta")
-            break
-        '''
     print("finished recording")
 
     # Stop registrazione
@@ -72,7 +61,7 @@ def recordAudio(max_duration, filename="./media/file_output.wav"):
 def speech_to_text(audio_path):
     # Carica l'audio
     audio, _ = librosa.load(audio_path, sr=16000)
-    input_values = processor_stt(audio, return_tensors="pt", padding="longest").input_values  # Trasforma l'audio per il modello
+    input_values = processor_stt(audio, return_tensors="pt", padding="longest", sampling_rate=16000).input_values  # Trasforma l'audio per il modello
 
     # Usa il modello per la predizione
     with torch.no_grad():
@@ -89,5 +78,10 @@ def get_response(duration=3):
     return response
 
 if __name__ == '__main__':
-    response=get_response()
-    print(f'transcription_hand_shake: {response}')
+    while True:
+        print('nel while')
+        response = get_response()
+        print('response: '+response)
+        if 'STOP' in response or 'FERMA' in response:
+            print('stopped')
+            break
