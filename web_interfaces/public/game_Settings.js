@@ -162,15 +162,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 console.log(`Sum of stress and workload: ${(stressValues[-1]+ workloadValues[-1]).toFixed(2)}`);
 
-                if (stressValues[-1]+ workloadValues[-1] < 7){// &&  userAverage*1.5 <= currentStressAverage ) { //da cambiare
+                if (stressValues[-1]+ workloadValues[-1] < 3.1 &&  stressValues[-1]<=Math.max(userAverage*1.5,1.7)  ){// &&  userAverage*1.5 <= currentStressAverage ) { //da cambiare
                     // Increase difficulty by 1 (max 5)
                     if (currentDifficulty < 5) {
                         updateDifficulty(currentDifficulty + 1, true);
-                    }
-                } else if (stressValues[-1]+ workloadValues[-1] >= 7 && currentStressAverage * 1.7 <= userAverage) {
+                    } } 
+                else if (stressValues[-1]+ workloadValues[-1] >= 3.1 && stressValues[-1]+ workloadValues[-1] < 3.2 && stressValues[-1]<=Math.max(userAverage*1.5,1.8)) {
                     // Keep difficulty the same
-                    console.log('Keeping difficulty the same');
-                } else {
+                    console.log('Keeping difficulty the same'); }
+                else {
                     // Decrease difficulty by 1 (min 1)
                     if (currentDifficulty > 1) {
                         updateDifficulty(currentDifficulty - 1, true);
