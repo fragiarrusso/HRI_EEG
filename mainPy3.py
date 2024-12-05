@@ -600,7 +600,7 @@ class StateHandler(SimpleHTTPRequestHandler):
             # Handle POST requests in GAME state if needed
             if self.path == "/api/gamepreamble":
                 current_state = GAME_PREAMBLE
-                call_to_docker_server(current_state, 'say', "Basta gioco per ora")
+                call_to_docker_server(current_state, 'say', "Basta giocare per ora")
                 print("Transitioned to GAME PREAMBLE.")
                 self.send_response(200)
                 self.end_headers()
@@ -627,10 +627,13 @@ class StateHandler(SimpleHTTPRequestHandler):
                 users = load_users()
                 user = next((u for u in users if u["name"] == current_user), None)
                 if user:
-                    user['last'] = data.get('last', user['last'])
-                    user['avg'] = data.get('avg', user['avg'])
+                    if connection_status == "connected":
+                        user['last'] = data.get('last', user['last'])
+                        user['avg'] = data.get('avg', user['avg'])
+                        user['games_played'] = data.get('games_played', user['games_played'])
+                    
                     user['last_level'] = data.get('last_level', user['last_level'])
-                    user['games_played'] = data.get('games_played', user['games_played'])
+                    
                     save_users(users)
                     self.send_response(200)
                     self.send_header("Content-Type", "application/json")
