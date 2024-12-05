@@ -499,7 +499,7 @@ class StateHandler(SimpleHTTPRequestHandler):
                 while True:
                     print('nel while')
                 
-                    #response = get_response()
+                    #response = get_response()  #CAREFUL CHANGE ALSO THERE TO USE PYAUDIO
                     response= 'x'
                     print('response: '+response)
                     if 'STOP' in response or 'FERMA' in response:
