@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Existing head content -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dynamic Difficulty Runner Game</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body id="gamePage">
-    <!-- Bottone freccia per tornare indietro -->
+    <!-- Back arrow button -->
     <button id="arrowButton">
         <!-- SVG content for the back arrow -->
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -25,7 +26,7 @@
     <p id="difficulty">Difficulty Level: 1</p>
     <p id="debug">Debug Info:</p>
 
-    <!-- Modale che apparirà al game over -->
+    <!-- Game Over Modal -->
     <div id="gameOverModal" class="modal" style="display: none;">
         <div class="modal-content">
             <p>Game Over :) Your score: 0</p>
@@ -35,37 +36,7 @@
         </div>
     </div>
 
-    <script>
-        // Bottone per game over e per la freccia
-        const gameoverButton = document.getElementById('gameOverButton');
-        const arrowButton = document.getElementById('arrowButton');
-
-        // Funzione per il bottone freccia (torna alla pagina game_preamble.html)
-        arrowButton.addEventListener('click', () => {
-            fetch('/api/gamepreamble', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-            })
-            .then(() => {
-                window.location.href = '/game_preamble.html';
-            })
-            .catch((error) => console.error('Error:', error));
-        });
-
-        // Gestisci il click sul bottone "OK :("
-        gameoverButton.addEventListener("click", () => {
-            fetch('/api/gamepreamble', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ score: 0 }) // Invia il punteggio al server
-            })
-            .then(() => {
-                window.location.href = '/game_preamble.html';
-            })
-            .catch((error) => console.error('Error:', error));
-        });
-
-    </script>
+    <!-- Include your JavaScript file -->
     <script src="game_Settings.js"></script>
 </body>
 </html>
