@@ -3,11 +3,11 @@ document.addEventListener("DOMContentLoaded", () => {
     
     // Difficulty Settings for Levels 1 to 5
     const difficultySettings = {
-        1: { gameSpeed: 1.5, obstacleFrequency: 0.03, minObstacleGap: 2500 },
-        2: { gameSpeed: 2.5, obstacleFrequency: 0.1, minObstacleGap: 2300 },
-        3: { gameSpeed: 3.5, obstacleFrequency: 0.2, minObstacleGap: 2100 },
-        4: { gameSpeed: 4.5, obstacleFrequency: 0.3, minObstacleGap: 1900 },
-        5: { gameSpeed: 5.5, obstacleFrequency: 0.4, minObstacleGap: 1700 },
+        1: { gameSpeed: 2, obstacleFrequency: 0.02, minObstacleGap: 2600},
+        2: { gameSpeed: 3.5, obstacleFrequency: 0.1, minObstacleGap: 2000},
+        3: { gameSpeed: 4, obstacleFrequency: 0.2, minObstacleGap: 1800 },
+        4: { gameSpeed: 5, obstacleFrequency: 0.3, minObstacleGap: 1500 },
+        5: { gameSpeed: 9.5, obstacleFrequency: 0.4, minObstacleGap: 1000 },
     };
 
     // Global variables
@@ -17,6 +17,8 @@ document.addEventListener("DOMContentLoaded", () => {
     let userLastLevel = 1;
     let previousGamesCount = 0;
 
+    let workload=0
+    let stress=0
     let stressValues = [];
     let workloadValues = [];
     let stressSum = 0;
@@ -110,31 +112,38 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Check connection status and fetch rolling averages every 5 seconds
     setInterval(() => {
+
+        /*
+        console.log("In 5s");
+        console.log("connectionOn:", connectionOn);
+        console.log("userAverage:", userAverage);
+        console.log("stress", stress);
+        console.log("workload:", workload);
+        console.log("-------------------------------------")
+        */
+       
         fetch('/api/connection_status')
             .then(response => response.json())
             .then(data => {
                 connectionOn = data.status === 'connected';
                 if (connectionOn) {
-                    // Fetch rolling averages
                     fetch('/api/rolling_averages')
                         .then(response => response.json())
                         .then(data => {
-                            let workload = parseFloat(data.rolling_avg_workload);
-                            let stress = parseFloat(data.rolling_avg_stress);
+                            workload = parseFloat(data.rolling_avg_workload);
+                            stress = parseFloat(data.rolling_avg_stress);
 
                             if (!isNaN(workload) && !isNaN(stress)) {
                                 workloadValues.push(workload);
                                 stressValues.push(stress);
 
-                                // Keep only the latest rollingWindowSize values
                                 if (stressValues.length > rollingWindowSize) stressValues.shift();
                                 if (workloadValues.length > rollingWindowSize) workloadValues.shift();
 
-                                // Update stress sum and count
+                                
                                 stressSum += stress;
                                 stressCount++;
 
-                                // Compute current averages
                                 stressAverage = stressValues.reduce((a, b) => a + b, 0) / stressValues.length;
                                 workloadAverage = workloadValues.reduce((a, b) => a + b, 0) / workloadValues.length;
 
@@ -154,31 +163,36 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Adjust difficulty every 15 seconds
     setInterval(() => {
+        console.log("In 15s interval:");
+        console.log("connectionOn:", connectionOn);
+        console.log("userAverage:", userAverage);
+        console.log("stress:", stress);
+        console.log("workload", workload);
+        
+
         if (connectionOn) {
-            // Check if we have enough data
-            if (stressValues.length > 0 && workloadValues.length > 0) {
-                //let sumStressWorkload = stressValues[-1]+ workloadValues[-1];
-                let currentStressAverage = stressAverage;
+            if (stress > 0 && workload > 0) {
+                let curr_stress = stress;
+                let curr_workload = workload;
+                console.log("connectionOn && stress > 0 && workload> 0");
+                console.log(`Sum of stress and workload: ${(curr_stress + curr_workload).toFixed(2)}`);
 
-                console.log(`Sum of stress and workload: ${(stressValues[-1]+ workloadValues[-1]).toFixed(2)}`);
-
-                if (stressValues[-1]+ workloadValues[-1] < 3.1 &&  stressValues[-1]<=Math.max(userAverage*1.5,1.7)  ){// &&  userAverage*1.5 <= currentStressAverage ) { //da cambiare
-                    // Increase difficulty by 1 (max 5)
+                if (curr_stress + curr_workload < 3 &&(isNaN(curr_stress) || curr_stress <=Math.max(userAverage*1.5,1.8)) ) {
+                    console.log("increasing difficulty branch");
                     if (currentDifficulty < 5) {
                         updateDifficulty(currentDifficulty + 1, true);
-                    } } 
-                else if (stressValues[-1]+ workloadValues[-1] >= 3.1 && stressValues[-1]+ workloadValues[-1] < 3.2 && stressValues[-1]<=Math.max(userAverage*1.5,1.8)) {
-                    // Keep difficulty the same
-                    console.log('Keeping difficulty the same'); }
-                else {
-                    // Decrease difficulty by 1 (min 1)
+                    }
+                } else if (stress + workload >= 3 && (isNaN(curr_stress) || curr_stress + curr_workload < 3.1 && curr_stress <=Math.max(userAverage*1.3,1.7))) {
+                    console.log('Keeping difficulty the same');
+                } else {
+                    console.log("In which branch we are? -> decreasing difficulty branch");
                     if (currentDifficulty > 1) {
                         updateDifficulty(currentDifficulty - 1, true);
                     }
                 }
             }
         } else {
-            // Connection is off, increase difficulty by 1 (up to max level 5)
+            console.log("In which branch we are? -> connectionOff branch");
             if (currentDifficulty < 5) {
                 updateDifficulty(currentDifficulty + 1, true);
             }
@@ -209,22 +223,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Spawn Obstacles with Proper Spacing
     function spawnObstacle() {
-        if (gracePeriodActive) return; // Do not spawn obstacles during grace periods
+        if (gracePeriodActive) return;
 
-        // Ensure proper spacing between obstacles
         const lastObstacle = obstacles[obstacles.length - 1];
         const currentTime = Date.now();
 
-        // Adjusted condition to avoid overly tight gaps
         if (lastObstacle && currentTime - lastObstacleSpawnTime < minObstacleGap) return;
 
-        // Create and spawn a new obstacle
         const obstacle = document.createElement("div");
         obstacle.classList.add("obstacle");
         obstacle.style.right = "0px";
         gameContainer.appendChild(obstacle);
         obstacles.push(obstacle);
-        lastObstacleSpawnTime = currentTime; // Update last spawn time
+        lastObstacleSpawnTime = currentTime;
     }
 
     // Move Obstacles and Check Collisions
@@ -257,14 +268,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // End Game and Reset
     function endGame() {
-        
-        // Calculate average stress during the game
         let gameStressAverage = stressSum / stressCount || 0;
 
-        // Update previousGamesCount
         previousGamesCount++;
 
-        // Prepare data to send to server
         const userData = {
             last: gameStressAverage,
             avg: ((userAverage * (previousGamesCount - 1)) + gameStressAverage) / previousGamesCount,
@@ -272,7 +279,6 @@ document.addEventListener("DOMContentLoaded", () => {
             games_played: previousGamesCount
         };
 
-        // Send data to server
         fetch('/api/update_user_data', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -286,17 +292,14 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error('Error updating user data:', error);
         });
 
-        // Show the modal with the score
         gameOverModal.style.display = 'block';
         gameOverModal.querySelector('p').innerText = `Game Over :) Your score: ${score}`;
 
-        // Stop the game
         obstacles.forEach(obstacle => obstacle.remove());
         obstacles = [];
         score = 0;
         isJumping = false;
 
-        // Reset variables
         stressValues = [];
         workloadValues = [];
         stressSum = 0;
@@ -305,12 +308,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Game Loop
     function gameLoop() {
-        if (gameOverModal.style.display === 'block') return; // Stop the loop if game over
+        if (gameOverModal.style.display === 'block') return;
         moveObstacles();
         requestAnimationFrame(gameLoop);
     }
 
-    // Start Game
     document.addEventListener("keydown", (e) => {
         if (gameOverModal.style.display === 'block') return;
         if (e.code === "Space") {
@@ -319,9 +321,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Event Listeners
     gameoverButton.addEventListener("click", () => {
-        // Redirect or reset the game
         fetch('/api/gamepreamble', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' }
@@ -343,6 +343,7 @@ document.addEventListener("DOMContentLoaded", () => {
         .catch((error) => console.error('Error:', error));
     });
 
-    startGracePeriod(100); // Initial grace period
+    startGracePeriod(100);
     gameLoop();
 });
+
