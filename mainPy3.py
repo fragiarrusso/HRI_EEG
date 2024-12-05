@@ -5,7 +5,7 @@ import socket
 import threading
 from http.server import SimpleHTTPRequestHandler, HTTPServer
 from collections import deque
-#from audio import get_response
+from audio import get_response
 import requests
 
 # Define states
@@ -24,7 +24,7 @@ workload_values = deque(maxlen=ROLLING_WINDOW_SIZE)
 stress_values = deque(maxlen=ROLLING_WINDOW_SIZE)
 
 # Globals
-ACTIVE = False
+ACTIVE = True
 current_state = INITIAL_STATE
 current_user = None
 welcome_message = ""
@@ -40,7 +40,10 @@ connection_thread = None
 rolling_avg_workload = None
 rolling_avg_stress = None
 
-
+if not ACTIVE:
+    def get_response():
+        return
+    
 # Load and save users
 def load_users():
     if not os.path.exists(USERS_FILE):
@@ -499,8 +502,7 @@ class StateHandler(SimpleHTTPRequestHandler):
                 while True:
                     print('nel while')
                 
-                    #response = get_response()  #CAREFUL CHANGE ALSO THERE TO USE PYAUDIO
-                    response= 'x'
+                    response = get_response() 
                     print('response: '+response)
                     if 'STOP' in response or 'FERMA' in response:
                         current_state = CHOICE

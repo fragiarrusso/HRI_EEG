@@ -5,8 +5,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const difficultySettings = {
         1: { gameSpeed: 2, obstacleFrequency: 0.02, minObstacleGap: 2600},
         2: { gameSpeed: 3.5, obstacleFrequency: 0.1, minObstacleGap: 2000},
-        3: { gameSpeed: 4, obstacleFrequency: 0.2, minObstacleGap: 1800 },
-        4: { gameSpeed: 5, obstacleFrequency: 0.3, minObstacleGap: 1500 },
+        3: { gameSpeed: 4, obstacleFrequency: 0.2, minObstacleGap: 1600 },
+        4: { gameSpeed: 5, obstacleFrequency: 0.3, minObstacleGap: 1200 },
         5: { gameSpeed: 9.5, obstacleFrequency: 0.4, minObstacleGap: 1000 },
     };
 
@@ -177,12 +177,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 console.log("connectionOn && stress > 0 && workload> 0");
                 console.log(`Sum of stress and workload: ${(curr_stress + curr_workload).toFixed(2)}`);
 
-                if (curr_stress + curr_workload < 3 &&(isNaN(curr_stress) || curr_stress <=Math.max(userAverage*1.5,1.8)) ) {
+                if (curr_stress + curr_workload < 2.9 &&(isNaN(curr_stress) || curr_stress <= Math.max(userAverage*1.5,1.8)) ) {
                     console.log("increasing difficulty branch");
                     if (currentDifficulty < 5) {
                         updateDifficulty(currentDifficulty + 1, true);
                     }
-                } else if (stress + workload >= 3 && (isNaN(curr_stress) || curr_stress + curr_workload < 3.1 && curr_stress <=Math.max(userAverage*1.3,1.7))) {
+                } else if (stress + workload >= 2.9 && (isNaN(curr_stress) || curr_stress + curr_workload < 3 && curr_stress <=Math.max(userAverage*1.3,1.7))) {
                     console.log('Keeping difficulty the same');
                 } else {
                     console.log("In which branch we are? -> decreasing difficulty branch");
@@ -205,7 +205,7 @@ document.addEventListener("DOMContentLoaded", () => {
         isJumping = true;
 
         let jumpInterval = setInterval(() => {
-            if (jumpHeight >= 130) {
+            if (jumpHeight >= 120) {
                 clearInterval(jumpInterval);
                 let fallInterval = setInterval(() => {
                     if (jumpHeight <= 0) {
