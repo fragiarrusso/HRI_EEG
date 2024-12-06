@@ -39,6 +39,7 @@ connection_thread = None
 # Global variables for rolling averages
 rolling_avg_workload = None
 rolling_avg_stress = None
+response = None
 
 if not ACTIVE:
     def get_response():
@@ -145,6 +146,13 @@ def attempt_connection():
                 connection_status = "disconnected"
             print(f"Connection attempt failed: {e}")
             time.sleep(10)  # Wait before retrying
+
+def audio_response():
+    global response
+    while True:
+        response = get_response() 
+        print('response: '+response)
+
 
 
 def call_to_docker_server(state, action, additional_data=None):
@@ -485,29 +493,28 @@ class StateHandler(SimpleHTTPRequestHandler):
                 self.wfile.write(b"Unknown endpoint in GAME_PREAMBLE state")   
                 
         elif current_state == EXERCISES_PREAMBLE:
+            audio_thread = threading.Thread(target=audio_response, daemon=True)
+            audio_thread.start()
             # Handle POST requests in EXERCISES_PREAMBLE state if needed
             if self.path == "/api/exercise":
                 # Transition to EXERCISE
                 current_state = EXERCISES
                 call_to_docker_server(current_state, 'say', "Alleniamoci!")
                 print("Transitioned to EXERCISES.")
-                for _ in range(8):
+                for i in range(8):
+                    if 'STOP' in response or 'FERMA' in response:
+                        current_state = CHOICE
+                        print('stopped')
+                        break
+                    call_to_docker_server(current_state, 'say', str(i))
                     call_to_docker_server(current_state, 'move', "bigcircle;0.5")
                 self.send_response(200)
                 self.end_headers()
                 self.wfile.write(json.dumps({
                     "message": "Transitioned to EXERCISES"
                 }).encode('utf-8'))
-                #audio_thread = threading.Thread(target=attempt_connection, daemon=True)
-                while True:
-                    print('nel while')
                 
-                    response = get_response() 
-                    print('response: '+response)
-                    if 'STOP' in response or 'FERMA' in response:
-                        current_state = CHOICE
-                        print('stopped')
-                        break
+
             elif self.path == "/api/rolling_averages":
                 # Return rolling averages
                 with connection_lock:
@@ -528,6 +535,11 @@ class StateHandler(SimpleHTTPRequestHandler):
                     }).encode('utf-8'))
                     i = 0
                     while i < 10:
+                        if 'STOP' in response or 'FERMA' in response:
+                            current_state = CHOICE
+                            print('stopped')
+                            break
+                        call_to_docker_server(current_state, 'say', str(i))
                         call_to_docker_server(current_state, 'move', "bigcircle;"+str(0.5*(1/workload)))
                         if stress > 1.6 and i > 6:
                             break
