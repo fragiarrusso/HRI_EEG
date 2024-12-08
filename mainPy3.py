@@ -39,7 +39,7 @@ connection_thread = None
 # Global variables for rolling averages
 rolling_avg_workload = None
 rolling_avg_stress = None
-response = None
+response = ''
 
 if not ACTIVE:
     def get_response():
