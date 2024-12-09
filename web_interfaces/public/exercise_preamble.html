@@ -100,7 +100,7 @@
                 headers: { 'Content-Type': 'application/json' },
             })
                 .then(() => {
-                    window.location.href = '/exercise.html';
+                    window.location.href = '/welcome.html';
                 })
                 .catch((error) => console.error('Error:', error));
         }
@@ -112,7 +112,7 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.status !== 'connected') {
-                        console.log("No connection to server2.py, proceeding to game.");
+                        console.log("No connection to server2.py, proceeding to Exercise.");
                         proceedToGame();
                         return;
                     }
