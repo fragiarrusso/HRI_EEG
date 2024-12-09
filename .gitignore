@@ -14,3 +14,5 @@ web_interfaces/users.json
 users.json
 STTModelWeights
 media
+myenv
+YOLO/yolov3.weights
