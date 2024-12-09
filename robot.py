@@ -344,11 +344,10 @@ class Robot():
 
     def greeting(self):
         
-        
         names = ["RShoulderPitch", "RShoulderRoll", "RElbowYaw", "RElbowRoll", "RWristYaw", "RHand"]
 
         # Primo movimento: alza il braccio per iniziare il saluto
-        initial_angles = [math.radians(4.0), math.radians(-21.4), math.radians(69.0), math.radians(48.0), math.radians(-45.0), 0.9]
+        initial_angles = [math.radians(20.0), math.radians(-21.4), math.radians(69.0), math.radians(48.0), math.radians(-45.0), 0.9]
         # initial_angles = [0.2, -0.3, 1.0, 0.5, 0.3]
         self.motion_service.angleInterpolation(names, initial_angles, [1.0]*6, True)
         
@@ -359,6 +358,29 @@ class Robot():
                 self.motion_service.setAngles("RElbowYaw", math.radians(50), 1.0)
             else:
                 self.motion_service.setAngles("RElbowYaw", math.radians(75), 1.0)
+
+        # # Riporta il braccio nella posizione neutra
+        neutral_angles = [1.4, 0.15, 1.0, 0.5, 0.3, 0.5]  # Posizione neutra per il braccio destro
+        self.motion_service.angleInterpolation(names, neutral_angles, [1.0]*6, True)
+
+        return
+
+    def saymove(self):
+        
+        names = ["RShoulderPitch", "RShoulderRoll", "RElbowYaw", "RElbowRoll", "RWristYaw", "RHand"]
+
+        # Primo movimento: alza il braccio per iniziare il saluto
+        initial_angles = [math.radians(20.0), math.radians(-20), math.radians(74.0), math.radians(48.0), math.radians(100.0), 0.9]
+        # initial_angles = [0.2, -0.3, 1.0, 0.5, 0.3]
+        self.motion_service.angleInterpolation(names, initial_angles, [1.0]*6, True)
+        
+        # Movimenti ripetuti del braccio
+        for i in range(6):  # Numero di scuotimenti
+            time.sleep(0.5)
+            if i % 2 == 0:
+                self.motion_service.setAngles("RShoulderRoll", math.radians(-20), 1.0)
+            else:
+                self.motion_service.setAngles("RShoulderRoll", math.radians(-30), 1.0)
 
         # # Riporta il braccio nella posizione neutra
         neutral_angles = [1.4, 0.15, 1.0, 0.5, 0.3, 0.5]  # Posizione neutra per il braccio destro
@@ -424,7 +446,7 @@ class Robot():
     def calm_stand(self):
         names = ["RElbowRoll","RElbowYaw", "RHand", "RShoulderPitch", "RShoulderRoll", "RWristYaw", "LElbowRoll","LElbowYaw", "LHand", "LShoulderPitch", "LShoulderRoll", "LWristYaw"]
 
-        initial_angles = [math.radians(88.0), math.radians(86.0), 0.97, math.radians(26.0), math.radians(-2.0),  math.radians(-70.0), math.radians(-88.0), math.radians(-86.0), 0.97, math.radians(26.0), math.radians(2.0),  math.radians(70.0)]
+        initial_angles = [math.radians(88.0), math.radians(86.0), 0.97, math.radians(50.0), math.radians(-2.0),  math.radians(-70.0), math.radians(-88.0), math.radians(-86.0), 0.97, math.radians(26.0), math.radians(2.0),  math.radians(70.0)]
         self.motion_service.angleInterpolation(names, initial_angles, [0.7]*12, True)
 
         # initial_angles = [math.radians(36.0), math.radians(70.0), 0.50, math.radians(-47.0), math.radians(-2.0),  math.radians(17.2), math.radians(-36.0), math.radians(-80.0), 0.50, math.radians(-47.0), math.radians(2.0),  math.radians(17.0)]

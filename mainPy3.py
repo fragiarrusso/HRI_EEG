@@ -80,7 +80,7 @@ def handle_initial_state():
     while humans == 0:
         humans = human_counter()
         print("found",humans,'humans')
-        
+    call_to_docker_server(current_state, 'move', "greet")
     call_to_docker_server(current_state, 'say', "Ciao, Sono Pepper")
     current_state = INTRODUCTION
     print("Transitioned to INTRODUCTION.")
@@ -316,6 +316,7 @@ class StateHandler(SimpleHTTPRequestHandler):
                 print(name)
                 if not name:
                     self.send_response(400)
+                    call_to_docker_server(current_state, 'move', "saymove")
                     call_to_docker_server(current_state, 'say', "inserisci un nome valido")
                     self.end_headers()
                     self.wfile.write(b"Name is required")
@@ -333,6 +334,7 @@ class StateHandler(SimpleHTTPRequestHandler):
                     print(f"Benvenuto {name}")
                     current_user = name
                     welcome_message = f"Benvenuto, {name}"
+                    call_to_docker_server(current_state, 'move', "greet")
                     call_to_docker_server(current_state, 'say', welcome_message +" "+ "cosa vuoi fare?")
                     
                     handle_introduction_state()
@@ -344,7 +346,7 @@ class StateHandler(SimpleHTTPRequestHandler):
                     }).encode("utf-8"))
                 else:
                     # Existing user
-                    
+                    call_to_docker_server(current_state, 'move', "saymove")
                     call_to_docker_server(current_state, 'say', "Il nome esiste gi, conferma di essere tu")
                     print(f"User {name} already exists. Awaiting confirmation.")
                     current_user = name  # Set current_user to handle name injection
@@ -359,6 +361,7 @@ class StateHandler(SimpleHTTPRequestHandler):
                 # Handle confirmation from existing users
                 name = data.get("name")
                 if not name:
+                    call_to_docker_server(current_state, 'move', "saymove")
                     call_to_docker_server(current_state, 'say', "inserisci un nome valido")
                     self.send_response(400)
                     self.end_headers()
@@ -371,6 +374,7 @@ class StateHandler(SimpleHTTPRequestHandler):
                 if user:
                     current_user = name
                     welcome_message = f"Bentornato, {name}"
+                    call_to_docker_server(current_state, 'move', "greet")
                     call_to_docker_server(current_state, 'say', welcome_message+" "+"cosa vuoi fare?")
                     handle_introduction_state()
                     print(f"Bentornato, {name}")
@@ -392,6 +396,7 @@ class StateHandler(SimpleHTTPRequestHandler):
                 # Transition to GAME_PREAMBLE
                 current_state = GAME_PREAMBLE
                 print("Transitioned to GAME_PREAMBLE.")
+                call_to_docker_server(current_state, 'move', "saymove")
                 call_to_docker_server(current_state, 'say', "Benvenuto in game preamble")
                 self.send_response(200)
                 self.end_headers()
@@ -402,6 +407,7 @@ class StateHandler(SimpleHTTPRequestHandler):
                 # Transition to EXERCISES_PREAMBLE
                 current_state = EXERCISES_PREAMBLE
                 print("Transitioned to EXERCISES_PREAMBLE.")
+                call_to_docker_server(current_state, 'move', "saymove")
                 call_to_docker_server(current_state, 'say', "Benvenuto in exercise preamble")
                 self.send_response(200)
                 self.end_headers()
@@ -425,6 +431,7 @@ class StateHandler(SimpleHTTPRequestHandler):
                         client_socket = None
                         with connection_lock:
                             connection_status = "disconnected"
+                call_to_docker_server(current_state, 'move', "saymove")
                 call_to_docker_server(current_state, 'say', "inserisci un nome valido")
                 print("Returned to INTRODUCTION.")
                 self.send_response(200)
@@ -441,6 +448,7 @@ class StateHandler(SimpleHTTPRequestHandler):
             if self.path == "/api/game":
                 # Transition to GAME
                 current_state = GAME
+                call_to_docker_server(current_state, 'move', "saymove")
                 call_to_docker_server(current_state, 'say', "Inizia a giocare!")
                 print("Transitioned to GAME.")
                 self.send_response(200)
@@ -453,6 +461,7 @@ class StateHandler(SimpleHTTPRequestHandler):
                 current_state = CHOICE
                 welcome_message = f"Ciao, {current_user}"
                 print("Returned to CHOICE.")
+                call_to_docker_server(current_state, 'move', "saymove")
                 call_to_docker_server(current_state, 'say', "Non ti va piu di giocare?")
                 self.send_response(200)
                 self.end_headers()
@@ -488,6 +497,7 @@ class StateHandler(SimpleHTTPRequestHandler):
                         client_socket = None
                         with connection_lock:
                             connection_status = "disconnected"
+                call_to_docker_server(current_state, 'move', "saymove")
                 call_to_docker_server(current_state, 'say', "Hai effettuato il logout, inserisci un nome valido")
                 print("Returned to INTRODUCTION.")
                 self.send_response(200)
@@ -507,6 +517,7 @@ class StateHandler(SimpleHTTPRequestHandler):
             if self.path == "/api/exercise":
                 # Transition to EXERCISE
                 current_state = EXERCISES
+                call_to_docker_server(current_state, 'move', "saymove")
                 call_to_docker_server(current_state, 'say', "Let's Exercise!")
                 call_to_docker_server(current_state, 'say', "say 'stop' to stop the exercises")
                 print("Transitioned to EXERCISES.")
@@ -557,6 +568,7 @@ class StateHandler(SimpleHTTPRequestHandler):
                 # Return to CHOICE
                 current_state = CHOICE
                 welcome_message = f"Ciao, {current_user}"
+                call_to_docker_server(current_state, 'move', "saymove")
                 call_to_docker_server(current_state, 'say', "Do you want to stop exercising?")
                 print("Returned to CHOICE.")
                 self.send_response(200)
@@ -593,6 +605,7 @@ class StateHandler(SimpleHTTPRequestHandler):
                         client_socket = None
                         with connection_lock:
                             connection_status = "disconnected"
+                call_to_docker_server(current_state, 'move', "saymove")
                 call_to_docker_server(current_state, 'say', "Hai effettuato il logout, inserisci un nome valido")
                 print("Returned to INTRODUCTION.")
                 self.send_response(200)
@@ -623,6 +636,7 @@ class StateHandler(SimpleHTTPRequestHandler):
             # Handle POST requests in GAME state if needed
             if self.path == "/api/gamepreamble":
                 current_state = GAME_PREAMBLE
+                call_to_docker_server(current_state, 'move', "saymove")
                 call_to_docker_server(current_state, 'say', "Basta giocare per ora")
                 print("Transitioned to GAME PREAMBLE.")
                 self.send_response(200)

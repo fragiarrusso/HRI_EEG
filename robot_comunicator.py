@@ -37,6 +37,12 @@ class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
                         robot.bigcircle(data2)
                     elif data1 == 'push':
                         robot.pushout(data2)
+                    elif data1 == 'greet':
+                        robot.greeting()
+                    elif data1 == 'login':
+                        robot.login()
+                    elif data1 == 'talk':
+                        robot.saymove()
 
                 # Respond with a success message
                 response = {
@@ -64,7 +70,7 @@ class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
 def RobotCommunicator(server_class=BaseHTTPServer.HTTPServer, handler_class=RequestHandler, port=9001):
     global robot
-    robot = Robot(37109)
+    robot = Robot(41679)
     server_address = ('172.17.0.1', port)
     httpd = server_class(server_address, handler_class)
     print("Python 2 HTTP server running on port "+str(port))
