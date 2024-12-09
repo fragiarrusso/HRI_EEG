@@ -7,6 +7,7 @@ from http.server import SimpleHTTPRequestHandler, HTTPServer
 from collections import deque
 from audio import get_response
 import requests
+from YOLO.human_counter_test import human_counter
 
 # Define states
 INITIAL_STATE = "INITIAL_STATE"
@@ -72,7 +73,14 @@ def save_users(users):
 def handle_initial_state():
     global current_state
     print("Starting INITIAL_STATE...")
-    time.sleep(2)  # Simulate a short delay
+    
+    humans = human_counter()
+    print("found",humans,'humans')
+    
+    while humans == 0:
+        humans = human_counter()
+        print("found",humans,'humans')
+        
     call_to_docker_server(current_state, 'say', "Ciao, Sono Pepper")
     current_state = INTRODUCTION
     print("Transitioned to INTRODUCTION.")
