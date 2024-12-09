@@ -507,7 +507,8 @@ class StateHandler(SimpleHTTPRequestHandler):
             if self.path == "/api/exercise":
                 # Transition to EXERCISE
                 current_state = EXERCISES
-                call_to_docker_server(current_state, 'say', "Alleniamoci!")
+                call_to_docker_server(current_state, 'say', "Let's Exercise!")
+                call_to_docker_server(current_state, 'say', "say 'stop' to stop the exercises")
                 print("Transitioned to EXERCISES.")
                 for i in range(8):
                     if 'STOP' in response or 'FERMA' in response:
@@ -556,7 +557,7 @@ class StateHandler(SimpleHTTPRequestHandler):
                 # Return to CHOICE
                 current_state = CHOICE
                 welcome_message = f"Ciao, {current_user}"
-                call_to_docker_server(current_state, 'say', "Non vuoi piu allenarti?")
+                call_to_docker_server(current_state, 'say', "Do you want to stop exercising?")
                 print("Returned to CHOICE.")
                 self.send_response(200)
                 self.end_headers()
