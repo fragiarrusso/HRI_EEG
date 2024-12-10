@@ -70,7 +70,7 @@ class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
 def RobotCommunicator(server_class=BaseHTTPServer.HTTPServer, handler_class=RequestHandler, port=9001):
     global robot
-    robot = Robot(41679)
+    robot = Robot(40097)
     server_address = ('172.17.0.1', port)
     httpd = server_class(server_address, handler_class)
     print("Python 2 HTTP server running on port "+str(port))

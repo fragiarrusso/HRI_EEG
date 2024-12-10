@@ -298,6 +298,8 @@ class Robot():
         time.sleep(speed)
         self.armsoutfrontPosition()
         time.sleep(speed)
+        self.startPosition()
+        time.sleep(speed)
 
         return
 

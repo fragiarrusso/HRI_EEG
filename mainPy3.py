@@ -521,13 +521,27 @@ class StateHandler(SimpleHTTPRequestHandler):
                 call_to_docker_server(current_state, 'say', "Let's Exercise!")
                 call_to_docker_server(current_state, 'say', "say 'stop' to stop the exercises")
                 print("Transitioned to EXERCISES.")
-                for i in range(8):
-                    if 'STOP' in response or 'FERMA' in response:
-                        current_state = CHOICE
-                        print('stopped')
-                        break
-                    call_to_docker_server(current_state, 'say', str(i))
-                    call_to_docker_server(current_state, 'move', "bigcircle;0.5")
+                for _ in range(3):
+                    for i in range(1,8):
+                        if 'STOP' in response or 'FERMA' in response:
+                            current_state = CHOICE
+                            print('stopped')
+                            break
+                        call_to_docker_server(current_state, 'say', str(i))
+                        call_to_docker_server(current_state, 'move', "bigcircle;0.5")
+
+                    time.sleep(5)
+
+                    for i in range(1,8):
+                        if 'STOP' in response or 'FERMA' in response:
+                            current_state = CHOICE
+                            print('stopped')
+                            break
+                        call_to_docker_server(current_state, 'say', str(i))
+                        call_to_docker_server(current_state, 'move', "push;0.5")
+
+                    time.sleep(5)
+
                 self.send_response(200)
                 self.end_headers()
                 self.wfile.write(json.dumps({
@@ -554,15 +568,30 @@ class StateHandler(SimpleHTTPRequestHandler):
                         "message": "Transitioned to EXERCISES"
                     }).encode('utf-8'))
                     i = 0
-                    while i < 10:
-                        if 'STOP' in response or 'FERMA' in response:
-                            current_state = CHOICE
-                            print('stopped')
-                            break
-                        call_to_docker_server(current_state, 'say', str(i))
-                        call_to_docker_server(current_state, 'move', "bigcircle;"+str(0.5*(1/workload)))
-                        if stress > 1.6 and i > 6:
-                            break
+                    for _ in range(3):
+                        while i < 10:
+                            if 'STOP' in response or 'FERMA' in response:
+                                current_state = CHOICE
+                                print('stopped')
+                                break
+                            call_to_docker_server(current_state, 'say', str(i))
+                            call_to_docker_server(current_state, 'move', "bigcircle;"+str(0.5*(1/workload)))
+                            if stress > 1.6 and i > 6:
+                                break
+
+                        time.sleep(5*stress)
+
+                        while i < 10:
+                            if 'STOP' in response or 'FERMA' in response:
+                                current_state = CHOICE
+                                print('stopped')
+                                break
+                            call_to_docker_server(current_state, 'say', str(i))
+                            call_to_docker_server(current_state, 'move', "push;"+str(0.5*(1/workload)))
+                            if stress > 1.6 and i > 6:
+                                break
+
+                        time.sleep(5*stress)                        
             
             elif self.path == "/api/choice":
                 # Return to CHOICE
