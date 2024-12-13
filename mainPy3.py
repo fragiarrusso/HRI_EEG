@@ -397,7 +397,7 @@ class StateHandler(SimpleHTTPRequestHandler):
                 current_state = GAME_PREAMBLE
                 print("Transitioned to GAME_PREAMBLE.")
                 call_to_docker_server(current_state, 'move', "saymove")
-                call_to_docker_server(current_state, 'say', "Benvenuto in game preamble")
+                call_to_docker_server(current_state, 'say', "Here is the game choice screen")
                 self.send_response(200)
                 self.end_headers()
                 self.wfile.write(json.dumps({
@@ -462,7 +462,7 @@ class StateHandler(SimpleHTTPRequestHandler):
                 welcome_message = f"Ciao, {current_user}"
                 print("Returned to CHOICE.")
                 call_to_docker_server(current_state, 'move', "saymove")
-                call_to_docker_server(current_state, 'say', "Non ti va piu di giocare?")
+                call_to_docker_server(current_state, 'say', "You don't want to play anymore?")
                 self.send_response(200)
                 self.end_headers()
                 self.wfile.write(json.dumps({
@@ -479,6 +479,14 @@ class StateHandler(SimpleHTTPRequestHandler):
                 self.wfile.write(json.dumps({
                     "rolling_avg_workload": workload,
                     "rolling_avg_stress": stress
+                }).encode('utf-8'))
+            elif self.path == "/api/highstress":
+                call_to_docker_server(current_state, 'move', "calm")
+                call_to_docker_server(current_state, 'say', "Your stress levels are too high, try to relax a bit before starting to play")
+                self.send_response(200)
+                self.end_headers()
+                self.wfile.write(json.dumps({
+                    "message": "Transitioned to CHOICE"
                 }).encode('utf-8'))
             elif self.path == "/api/introduction": 
                 # Return to INTRODUCTION

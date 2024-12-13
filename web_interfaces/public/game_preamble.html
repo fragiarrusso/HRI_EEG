@@ -396,7 +396,7 @@
     <!-- Stress Level Modal -->
     <div id="gamePreambleModal">
         <div class="modal-content">
-            <p>I tuoi livelli di stress sono troppo alti, prova a rilassarti prima di iniziare a giocare</p>
+            <p>Your stress levels are too high, try to relax a bit before starting to play</p>
             <button id="stressConfirmButton">OK</button>
         </div>
     </div>
@@ -517,6 +517,9 @@
                                 if (sum > 3.15) {
                                     // Show the stress modal
                                     showStressModal();
+                                    fetch('/api/highstress').then(response => response.json()).then(data => {
+                                        
+                                    })
                                 } else {
                                     // Proceed to the game
                                     proceedToGame();
