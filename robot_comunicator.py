@@ -43,6 +43,12 @@ class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
                         robot.login()
                     elif data1 == 'talk':
                         robot.saymove()
+                    elif data1 == 'calm':
+                        robot.calm_stand()
+                        robot.neutral_position()
+                    elif data1 == 'wrong':
+                        robot.wrong_log_in_stand()
+                        robot.neutral_position()
 
                 # Respond with a success message
                 response = {

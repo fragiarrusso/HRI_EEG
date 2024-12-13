@@ -81,7 +81,7 @@ def handle_initial_state():
         humans = human_counter()
         print("found",humans,'humans')
     call_to_docker_server(current_state, 'move', "greet")
-    call_to_docker_server(current_state, 'say', "Ciao, Sono Pepper")
+    call_to_docker_server(current_state, 'say', "Hi, I am Pepper")
     current_state = INTRODUCTION
     print("Transitioned to INTRODUCTION.")
 
@@ -316,8 +316,8 @@ class StateHandler(SimpleHTTPRequestHandler):
                 print(name)
                 if not name:
                     self.send_response(400)
-                    call_to_docker_server(current_state, 'move', "saymove")
-                    call_to_docker_server(current_state, 'say', "inserisci un nome valido")
+                    call_to_docker_server(current_state, 'move', "wrong")
+                    call_to_docker_server(current_state, 'say', "Insert a valid name")
                     self.end_headers()
                     self.wfile.write(b"Name is required")
                     
@@ -333,9 +333,9 @@ class StateHandler(SimpleHTTPRequestHandler):
                     save_users(users)
                     print(f"Benvenuto {name}")
                     current_user = name
-                    welcome_message = f"Benvenuto, {name}"
+                    welcome_message = f"Welcome, {name}"
                     call_to_docker_server(current_state, 'move', "greet")
-                    call_to_docker_server(current_state, 'say', welcome_message +" "+ "cosa vuoi fare?")
+                    call_to_docker_server(current_state, 'say', welcome_message +" "+ "what do you want to do?")
                     
                     handle_introduction_state()
                     self.send_response(200)
@@ -347,7 +347,7 @@ class StateHandler(SimpleHTTPRequestHandler):
                 else:
                     # Existing user
                     call_to_docker_server(current_state, 'move', "saymove")
-                    call_to_docker_server(current_state, 'say', "Il nome esiste gi, conferma di essere tu")
+                    call_to_docker_server(current_state, 'say', "the name already exist, please confirm to be you")
                     print(f"User {name} already exists. Awaiting confirmation.")
                     current_user = name  # Set current_user to handle name injection
                     welcome_message = ""  # Clear welcome message until confirmed

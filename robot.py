@@ -461,6 +461,23 @@ class Robot():
         # self.motion_service.angleInterpolation(names, initial_angles, [0.7]*12, True)
 
         return
+    
+    def wrong_log_in_stand(self):
+        names = ["LElbowRoll","LElbowYaw", "LHand", "LShoulderPitch", "LShoulderRoll", "LWristYaw"]
+
+        initial_angles = [math.radians(88.0), math.radians(86.0), 0.97, math.radians(50.0), math.radians(-2.0),  math.radians(-70.0), math.radians(-88.0), math.radians(-86.0), 0.97, math.radians(26.0), math.radians(2.0),  math.radians(70.0)]
+        self.motion_service.angleInterpolation(names, initial_angles, [0.7]*12, True)
+
+        # initial_angles = [math.radians(36.0), math.radians(70.0), 0.50, math.radians(-47.0), math.radians(-2.0),  math.radians(17.2), math.radians(-36.0), math.radians(-80.0), 0.50, math.radians(-47.0), math.radians(2.0),  math.radians(17.0)]
+        # self.motion_service.angleInterpolation(names, initial_angles, [0.7]*12, True)
+
+        # initial_angles = [math.radians(68.0), math.radians(70.0), 0.50, math.radians(26.0), math.radians(-2.0),  math.radians(17.2), math.radians(-68.0), math.radians(-80.0), 0.50, math.radians(26.0), math.radians(2.0),  math.radians(17.0)]
+        # self.motion_service.angleInterpolation(names, initial_angles, [0.7]*12, True)
+
+        # initial_angles = [math.radians(36.0), math.radians(70.0), 0.50, math.radians(-47.0), math.radians(-2.0),  math.radians(17.2), math.radians(-36.0), math.radians(-80.0), 0.50, math.radians(-47.0), math.radians(2.0),  math.radians(17.0)]
+        # self.motion_service.angleInterpolation(names, initial_angles, [0.7]*12, True)
+
+        return
 
     def login(self):
         
