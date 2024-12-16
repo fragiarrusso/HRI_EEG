@@ -433,7 +433,7 @@ class StateHandler(SimpleHTTPRequestHandler):
                         with connection_lock:
                             connection_status = "disconnected"
                 call_to_docker_server(current_state, 'move', "saymove")
-                call_to_docker_server(current_state, 'say', "inserisci un nome valido")
+                call_to_docker_server(current_state, 'say', "insert a valid name")
                 print("Returned to INTRODUCTION.")
                 self.send_response(200)
                 self.end_headers()
@@ -459,7 +459,7 @@ class StateHandler(SimpleHTTPRequestHandler):
             elif self.path == "/api/choice":
                 # Return to CHOICE
                 current_state = CHOICE
-                welcome_message = f"Ciao, {current_user}"
+                welcome_message = f"Hi, {current_user}"
                 print("Returned to CHOICE.")
                 call_to_docker_server(current_state, 'move', "saymove")
                 call_to_docker_server(current_state, 'say', "You don't want to play anymore?")
@@ -604,7 +604,7 @@ class StateHandler(SimpleHTTPRequestHandler):
             elif self.path == "/api/choice":
                 # Return to CHOICE
                 current_state = CHOICE
-                welcome_message = f"Ciao, {current_user}"
+                welcome_message = f"Hi, {current_user}"
                 call_to_docker_server(current_state, 'move', "saymove")
                 call_to_docker_server(current_state, 'say', "Do you want to stop exercising?")
                 print("Returned to CHOICE.")
@@ -674,7 +674,7 @@ class StateHandler(SimpleHTTPRequestHandler):
             if self.path == "/api/gamepreamble":
                 current_state = GAME_PREAMBLE
                 call_to_docker_server(current_state, 'move', "saymove")
-                call_to_docker_server(current_state, 'say', "Basta giocare per ora")
+                call_to_docker_server(current_state, 'say', "Stop play for now)
                 print("Transitioned to GAME PREAMBLE.")
                 self.send_response(200)
                 self.end_headers()
