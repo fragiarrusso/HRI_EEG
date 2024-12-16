@@ -7,10 +7,10 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Benvenuto</h1>
-    <p>Inserisci qui il tuo nickname:</p>
+    <h1>Welcome</h1>
+    <p>Insert your nickname here:</p>
     <div id="nameContainer"></div>
-    <button id="submitName">Invia</button>
+    <button id="submitName">Enter</button>
 
     <div class="keyboard-row" id="row1"></div>
     <div class="keyboard-row" id="row2"></div>
@@ -18,14 +18,14 @@
 
     <!-- Aggiungi una nuova riga per il tasto SPAZIO e CANCELLA -->
     <div class="keyboard-row" id="row4">
-        <button id="spaceButton" class="keyboard-button">SPAZIO</button>
-        <button id="deleteButton" class="keyboard-button">CANCELLA</button>
+        <button id="spaceButton" class="keyboard-button">SPACE</button>
+        <button id="deleteButton" class="keyboard-button">CANCEL</button>
     </div>
 
     <!-- Modale per nome vuoto -->
     <div id="emptyNameModal" class="modal">
         <div class="modal-content">
-            <p id="emptyNameMessage">Inserisci un nickname valido.</p>
+            <p id="emptyNameMessage">Insert a valid name</p>
             <div class="modal-buttons">
                 <button id="closeEmptyNameModal">Chiudi</button>
             </div>
@@ -35,9 +35,9 @@
     <!-- Modale personalizzato -->
     <div id="customModal" class="modal">
         <div class="modal-content">
-            <p id="modalMessage">Il nome utente è già stato inserito, confermi di essere tu?</p>
+            <p id="modalMessage">the name already exist, please confirm to be you</p>
             <div class="modal-buttons">
-                <button id="confirmButton">Sì</button>
+                <button id="confirmButton">Yes</button>
                 <button id="cancelButton">No</button>
             </div>
         </div>
