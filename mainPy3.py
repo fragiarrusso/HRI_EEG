@@ -529,7 +529,7 @@ class StateHandler(SimpleHTTPRequestHandler):
                 call_to_docker_server(current_state, 'say', "Let's Exercise!")
                 call_to_docker_server(current_state, 'say', "say 'stop' to stop the exercises")
                 print("Transitioned to EXERCISES.")
-                for _ in range(3):
+                for n_series in range(3):
                     for i in range(1,8):
                         if 'STOP' in response or 'FERMA' in response:
                             current_state = CHOICE
@@ -537,6 +537,8 @@ class StateHandler(SimpleHTTPRequestHandler):
                             break
                         call_to_docker_server(current_state, 'say', str(i))
                         call_to_docker_server(current_state, 'move', "bigcircle;0.5")
+                        if i==4:
+                            call_to_docker_server(current_state, 'say', "Come on come on don't give up!")
 
                     time.sleep(5)
 
@@ -547,8 +549,17 @@ class StateHandler(SimpleHTTPRequestHandler):
                             break
                         call_to_docker_server(current_state, 'say', str(i))
                         call_to_docker_server(current_state, 'move', "push;0.5")
+                    
+                    if n_series==0:
+                        call_to_docker_server(current_state, 'say', "The first set of exercises is done, good job!")
+
+                    call_to_docker_server(current_state, 'say', "Let's rest!")
 
                     time.sleep(5)
+                    
+                    if n_series==1:
+                        call_to_docker_server(current_state, 'say', "It's very close, you can do it!")
+
 
                 self.send_response(200)
                 self.end_headers()
@@ -576,7 +587,7 @@ class StateHandler(SimpleHTTPRequestHandler):
                         "message": "Transitioned to EXERCISES"
                     }).encode('utf-8'))
                     i = 0
-                    for _ in range(3):
+                    for n_series in range(3):
                         while i < 10:
                             if 'STOP' in response or 'FERMA' in response:
                                 current_state = CHOICE
@@ -585,9 +596,18 @@ class StateHandler(SimpleHTTPRequestHandler):
                             call_to_docker_server(current_state, 'say', str(i))
                             call_to_docker_server(current_state, 'move', "bigcircle;"+str(0.5*(1/workload)))
                             if stress > 1.6 and i > 6:
+                                call_to_docker_server(current_state, 'say', "It's better to relax for a moment")
                                 break
+                            if i==5:
+                               call_to_docker_server(current_state, 'say', "Come on come on don't give up! You're doing great")
+                            i=i+1
 
+                        i=0
                         time.sleep(5*stress)
+                        if (workload+stress > 3.2):
+                            call_to_docker_server(current_state, 'move', "calm")
+                            call_to_docker_server(current_state, 'say', "You are under a lot of stress, try to relax")
+                            time.sleep(5*stress)
 
                         while i < 10:
                             if 'STOP' in response or 'FERMA' in response:
@@ -597,9 +617,27 @@ class StateHandler(SimpleHTTPRequestHandler):
                             call_to_docker_server(current_state, 'say', str(i))
                             call_to_docker_server(current_state, 'move', "push;"+str(0.5*(1/workload)))
                             if stress > 1.6 and i > 6:
+                                call_to_docker_server(current_state, 'move', "calm")
+                                call_to_docker_server(current_state, 'say', "It's better to relax for a moment")
                                 break
+                            if i==5:
+                               call_to_docker_server(current_state, 'say', "Come on, a final effort")
+                            i=i+1
+                        
+                        if n_series==0:
+                          call_to_docker_server(current_state, 'say', "The first set of exercises is done, good job!")
+                          
+                        call_to_docker_server(current_state, 'say', "Let's rest!")
 
-                        time.sleep(5*stress)                        
+                        time.sleep(5*stress)
+                        
+                        if (workload+stress > 3.2):
+                            call_to_docker_server(current_state, 'move', "calm")
+                            call_to_docker_server(current_state, 'say', "You are under a lot of stress, try to relax")
+                            time.sleep(5*stress)          
+
+                        if n_series==1:
+                            call_to_docker_server(current_state, 'say', "It's very close, you can do it!")              
             
             elif self.path == "/api/choice":
                 # Return to CHOICE
