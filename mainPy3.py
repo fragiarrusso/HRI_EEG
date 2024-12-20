@@ -556,7 +556,7 @@ class StateHandler(SimpleHTTPRequestHandler):
                     call_to_docker_server(current_state, 'say', "Let's rest!")
 
                     time.sleep(5)
-                    
+
                     if n_series==1:
                         call_to_docker_server(current_state, 'say', "It's very close, you can do it!")
 
@@ -586,8 +586,10 @@ class StateHandler(SimpleHTTPRequestHandler):
                     self.wfile.write(json.dumps({
                         "message": "Transitioned to EXERCISES"
                     }).encode('utf-8'))
-                    i = 0
                     for n_series in range(3):
+                        if current_state==CHOICE:
+                            break
+                        i = 0
                         while i < 10:
                             if 'STOP' in response or 'FERMA' in response:
                                 current_state = CHOICE
@@ -602,13 +604,14 @@ class StateHandler(SimpleHTTPRequestHandler):
                                call_to_docker_server(current_state, 'say', "Come on come on don't give up! You're doing great")
                             i=i+1
 
-                        i=0
                         time.sleep(5*stress)
+                        
                         if (workload+stress > 3.2):
                             call_to_docker_server(current_state, 'move', "calm")
                             call_to_docker_server(current_state, 'say', "You are under a lot of stress, try to relax")
                             time.sleep(5*stress)
-
+                        
+                        i=0
                         while i < 10:
                             if 'STOP' in response or 'FERMA' in response:
                                 current_state = CHOICE
@@ -651,6 +654,7 @@ class StateHandler(SimpleHTTPRequestHandler):
                 self.wfile.write(json.dumps({
                     "message": "Transitioned to CHOICE"
                 }).encode('utf-8'))
+            '''
             elif self.path == "/api/rolling_averages":
                 # Return rolling averages
                 with connection_lock:
@@ -662,7 +666,8 @@ class StateHandler(SimpleHTTPRequestHandler):
                 self.wfile.write(json.dumps({
                     "rolling_avg_workload": workload,
                     "rolling_avg_stress": stress
-                }).encode('utf-8'))
+                }).encode('utf-8'))'''
+
             elif self.path == "/api/introduction": 
                 # Return to INTRODUCTION
                 #global client_socket, connection_status
