@@ -601,10 +601,10 @@ class StateHandler(SimpleHTTPRequestHandler):
                                 call_to_docker_server(current_state, 'say', "It's better to relax for a moment")
                                 break
                             if i==5:
-                               call_to_docker_server(current_state, 'say', "Come on come on don't give up!)
+                               call_to_docker_server(current_state, 'say', "Come on come on don't give up!")
                             i=i+1
-                        if (strees<1.6):
-                            call_to_docker_server(current_state, 'say', "You're doing great"")
+                        if (stress<1.6):
+                            call_to_docker_server(current_state, 'say', "You're doing great")
 
 
                         time.sleep(5*stress)
@@ -694,7 +694,7 @@ class StateHandler(SimpleHTTPRequestHandler):
             if self.path == "/api/gamepreamble":
                 current_state = GAME_PREAMBLE
                 call_to_docker_server(current_state, 'move', "saymove")
-                call_to_docker_server(current_state, 'say', "Stop play for now)
+                call_to_docker_server(current_state, 'say', "Stop play for now")
                 print("Transitioned to GAME PREAMBLE.")
                 self.send_response(200)
                 self.end_headers()
