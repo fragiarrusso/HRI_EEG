@@ -35,7 +35,6 @@ class RobotHandler():
 
 
         server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        # server_socket.bind(('0.0.0.0', 12345))  # '0.0.0.0' permette connessioni da qualsiasi indirizzo
         server_socket.bind(('0.0.0.0', 12345))  # '0.0.0.0' permette connessioni da qualsiasi indirizzo
         server_socket.listen(5)
 
@@ -110,17 +109,5 @@ if __name__ == "__main__":
     robotHandler.robot.say("Hello World")
     robotHandler.robot.frontSmallCircPosition()
 
-    # server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    # server_socket.bind(('0.0.0.0', 12345))  # '0.0.0.0' permette connessioni da qualsiasi indirizzo
-    # server_socket.listen(1)
 
-    # while True:
-    #     client_socket, addr = server_socket.accept()
-    #     print "Connected by", addr
-    #     while True:
-    #         data = client_socket.recv(1024)
-    #         if not data:
-    #             break
-    #         client_socket.sendall(data)
-    #     client_socket.close()
 

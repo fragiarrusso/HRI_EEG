@@ -81,3 +81,7 @@ def RobotCommunicator(server_class=BaseHTTPServer.HTTPServer, handler_class=Requ
     httpd = server_class(server_address, handler_class)
     print("Python 2 HTTP server running on port "+str(port))
     httpd.serve_forever()
+
+
+if __name__ == "__main__":
+    robotcommunicator = RobotCommunicator()

@@ -304,45 +304,6 @@ class Robot():
         return
 
 
-    def shieldPosition(self):
-        
-
-        shoulder_pitch_angle = math.radians(0)  # Angolo in radianti (esempio di angolo, sperimenta con valori diversi)
-        shoulder_roll_angle = math.radians(-6)  # Angolo in radianti (esempio di angolo, sperimenta con valori diversi)
-
-        # Impostare l'angolo del giunto RElbowRoll per fare in modo che il braccio punti verso il basso
-        elbow_roll_angle = math.radians(73)  # Angolo in radianti (esempio di angolo, sperimenta con valori diversi)
-        elbow_yaw_angle = math.radians(10)  # Angolo in radianti (esempio di angolo, sperimenta con valori diversi)
-
-        fractionMaxSpeed = 0.5  # Velocita massima del movimento (da 0.0 a 1.0)
-
-        # Settare gli angoli dei giunti
-        self.motion_service.setAngles("RShoulderPitch", shoulder_pitch_angle, fractionMaxSpeed)
-        self.motion_service.setAngles("RShoulderRoll", shoulder_roll_angle, fractionMaxSpeed)
-        self.motion_service.setAngles("RElbowRoll", elbow_roll_angle, fractionMaxSpeed)
-        self.motion_service.setAngles("RElbowYaw", elbow_yaw_angle, fractionMaxSpeed)
-
-        return
-
-    def chargePosition(self):
-        
-
-        shoulder_pitch_angle = math.radians(0)  # Angolo in radianti (esempio di angolo, sperimenta con valori diversi)
-        shoulder_roll_angle = math.radians(-6)  # Angolo in radianti (esempio di angolo, sperimenta con valori diversi)
-
-        # Impostare l'angolo del giunto RElbowRoll per fare in modo che il braccio punti verso il basso
-        elbow_roll_angle = math.radians(73)  # Angolo in radianti (esempio di angolo, sperimenta con valori diversi)
-        elbow_yaw_angle = math.radians(87)  # Angolo in radianti (esempio di angolo, sperimenta con valori diversi)
-
-        fractionMaxSpeed = 0.5  # Velocita massima del movimento (da 0.0 a 1.0)
-
-        # Settare gli angoli dei giunti
-        self.motion_service.setAngles("RShoulderPitch", shoulder_pitch_angle, fractionMaxSpeed)
-        self.motion_service.setAngles("RShoulderRoll", shoulder_roll_angle, fractionMaxSpeed)
-        self.motion_service.setAngles("RElbowRoll", elbow_roll_angle, fractionMaxSpeed)
-        self.motion_service.setAngles("RElbowYaw", elbow_yaw_angle, fractionMaxSpeed)
-
-        return
 
     def greeting(self):
         
@@ -390,60 +351,6 @@ class Robot():
 
         return
 
-    def exultation_right_arm(self):
-        names = ["RElbowRoll","RElbowYaw", "RHand", "RShoulderPitch", "RShoulderRoll", "RWristYaw"]
-        initial_angles = [math.radians(68.0), math.radians(70.0), 0.50, math.radians(26.0), math.radians(-2.0),  math.radians(17.2)]
-        
-        self.motion_service.angleInterpolation(names, initial_angles, [1.0]*6, True)
-
-
-        initial_angles = [math.radians(36.0), math.radians(70.0), 0.50, math.radians(-47.0), math.radians(-2.0),  math.radians(17.2)]
-        self.motion_service.angleInterpolation(names, initial_angles, [1.0]*6, True)
-
-        initial_angles = [math.radians(68.0), math.radians(70.0), 0.50, math.radians(26.0), math.radians(-2.0),  math.radians(17.2)]
-        self.motion_service.angleInterpolation(names, initial_angles, [1.0]*6, True)
-
-        initial_angles = [math.radians(36.0), math.radians(70.0), 0.50, math.radians(-47.0), math.radians(-2.0),  math.radians(17.2)]
-        self.motion_service.angleInterpolation(names, initial_angles, [1.0]*6, True)
-
-
-        return
-
-    def exultation_left_arm(self):
-        names = ["LElbowRoll","LElbowYaw", "LHand", "LShoulderPitch", "LShoulderRoll", "LWristYaw"]
-        initial_angles = [math.radians(-68.0), math.radians(-80.0), 0.50, math.radians(26.0), math.radians(2.0),  math.radians(17.0)]
-        
-        self.motion_service.angleInterpolation(names, initial_angles, [1.0]*6, True)
-
-
-        initial_angles = [math.radians(-36.0), math.radians(-80.0), 0.50, math.radians(-47.0), math.radians(2.0),  math.radians(17.0)]
-        self.motion_service.angleInterpolation(names, initial_angles, [1.0]*6, True)
-
-        initial_angles = [math.radians(-68.0), math.radians(-80.0), 0.50, math.radians(26.0), math.radians(2.0),  math.radians(17.0)]
-        self.motion_service.angleInterpolation(names, initial_angles, [1.0]*6, True)
-
-        initial_angles = [math.radians(-36.0), math.radians(-80.0), 0.50, math.radians(-47.0), math.radians(2.0),  math.radians(17.0)]
-        self.motion_service.angleInterpolation(names, initial_angles, [1.0]*6, True)
-
-
-        return
-
-    def exultation(self):
-        names = ["RElbowRoll","RElbowYaw", "RHand", "RShoulderPitch", "RShoulderRoll", "RWristYaw", "LElbowRoll","LElbowYaw", "LHand", "LShoulderPitch", "LShoulderRoll", "LWristYaw"]
-
-        initial_angles = [math.radians(68.0), math.radians(70.0), 0.50, math.radians(26.0), math.radians(-2.0),  math.radians(17.2), math.radians(-68.0), math.radians(-80.0), 0.50, math.radians(26.0), math.radians(2.0),  math.radians(17.0)]
-        self.motion_service.angleInterpolation(names, initial_angles, [0.7]*12, True)
-
-        initial_angles = [math.radians(36.0), math.radians(70.0), 0.50, math.radians(-47.0), math.radians(-2.0),  math.radians(17.2), math.radians(-36.0), math.radians(-80.0), 0.50, math.radians(-47.0), math.radians(2.0),  math.radians(17.0)]
-        self.motion_service.angleInterpolation(names, initial_angles, [0.7]*12, True)
-
-        initial_angles = [math.radians(68.0), math.radians(70.0), 0.50, math.radians(26.0), math.radians(-2.0),  math.radians(17.2), math.radians(-68.0), math.radians(-80.0), 0.50, math.radians(26.0), math.radians(2.0),  math.radians(17.0)]
-        self.motion_service.angleInterpolation(names, initial_angles, [0.7]*12, True)
-
-        initial_angles = [math.radians(36.0), math.radians(70.0), 0.50, math.radians(-47.0), math.radians(-2.0),  math.radians(17.2), math.radians(-36.0), math.radians(-80.0), 0.50, math.radians(-47.0), math.radians(2.0),  math.radians(17.0)]
-        self.motion_service.angleInterpolation(names, initial_angles, [0.7]*12, True)
-
-        return
 
     def calm_stand(self):
         names = ["RElbowRoll","RElbowYaw", "RHand", "RShoulderPitch", "RShoulderRoll", "RWristYaw", "LElbowRoll","LElbowYaw", "LHand", "LShoulderPitch", "LShoulderRoll", "LWristYaw"]
@@ -497,18 +404,7 @@ class Robot():
 
         return
     
-    def countDown(self):
-        self.say("Rest")
-        self.startPosition()
-        time.sleep(1)
-        self.say("3")
-        time.sleep(1)
-        self.say("2")
-        time.sleep(1)
-        self.say("1")
-        time.sleep(1)
 
-        return
 
 
 if __name__ == "__main__":
@@ -523,15 +419,5 @@ if __name__ == "__main__":
     robot.calm_stand()
     robot.say("Calm down! I will play softer!")
     
-    # robot.countDown()
-    # robot.shieldPosition()
-    # robot.countDown()
-    # robot.shootPosition()
-    # robot.countDown()
-    # robot.chargePosition()
 
-    # print(math.degrees(0.2))
-    # print(math.degrees(-0.3))
-    # print(math.degrees(1))
-    # print(math.degrees(0.5))
-    # print(math.degrees(0.3))    
+
